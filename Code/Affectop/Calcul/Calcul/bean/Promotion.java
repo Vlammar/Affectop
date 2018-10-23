@@ -1,8 +1,14 @@
-package Calcul;
+package Calcul.bean;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bean
+ * 
+ * @author Valentin JABRE
+ * @version 1.0
+ */
 public class Promotion {
 	private int annee;
 	private int niveau;

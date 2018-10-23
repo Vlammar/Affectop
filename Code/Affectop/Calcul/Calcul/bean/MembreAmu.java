@@ -1,7 +1,11 @@
-package Calcul;
+package Calcul.bean;
 
-import java.util.List;
-
+/**
+ * Bean
+ * 
+ * @author Valentin JABRE
+ * @version 1.0
+ */
 public class MembreAmu {
 	private String nom;
 	private String prenom;

@@ -2,6 +2,10 @@ package Calcul;
 
 import java.util.ArrayList;
 
+import Calcul.bean.Eleve;
+import Calcul.bean.Promotion;
+import Calcul.excel.ExcelReader;
+
 public class main {
 
 	public static void main(String[] args) {

@@ -1,8 +1,14 @@
-package Calcul;
+package Calcul.bean;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Bean
+ * 
+ * @author Valentin JABRE
+ * @version 1.0
+ */
 public class Option {
 	private String nom;
 
