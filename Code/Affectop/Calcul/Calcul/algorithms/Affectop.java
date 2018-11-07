@@ -1,4 +1,4 @@
-package calcul;
+package Calcul.algorithms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,7 +90,7 @@ public class Affectop {
 		
 		for(int d :days) {
 			affectOneDay(incompatibilities, d, available);
-			System.out.println(test.AffectopTest.isStable(students, 3,incompatibilities));
+			//System.out.println(test.AffectopTest.isStable(students, 3,incompatibilities));
 		}
 	}
 	
@@ -184,11 +184,9 @@ public class Affectop {
 					o.accepted.clear();
 			}
 			Affectop currentAffect = new Affectop(students, options,nbDays);
-			System.out.println("===============");
 			currentAffect.affectStable(incompatibilities);
 			Result current = new Result(students);
 			
-			//System.out.println(best.satisfaction()+" "+current.satisfaction());
 			if(current .compareTo(best) > 0)
 				best = current;
 		}
@@ -202,6 +200,7 @@ public class Affectop {
 		ArrayList<Student> students = randomStudents(20,options, nbDays);
 		HashMap<Option, LinkedList<Option>> incompatibilities = makeRandomIncompatibilities(options);
 		getBestResult(10,incompatibilities,students,options,nbDays);
-		
+		for(Student s : students)
+			System.out.println(s.mail+":"+s.affected);
 	}
 }

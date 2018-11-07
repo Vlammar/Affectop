@@ -1,30 +1,53 @@
-package calcul;
+package Calcul.algorithms;
 
 import java.util.LinkedList;
 
 /**
- * La classe correspondant à une option
+ * Bean
+ * 
+ * @author Mathieu VALLET
+ * @version 1.0
  */
 public class Option {
 	/**la taille de l'option*/
-	public int size;
-	/**la liste des étudiants*/
-	public LinkedList<Student> accepted;
+	private int size;
+	/**la liste des etudiants*/
+	private LinkedList<Student> accepted;
 	/**le nom de l'options*/
-	public String intitule;
+	private String title;
 	/**le groupe d'options auquel il appartient (le jour)*/
-	public int day;
+	private int day;
 	
+	public LinkedList<Student> getAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(LinkedList<Student> accepted) {
+		this.accepted = accepted;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
 	/** Constructeur d'options
 	 * @param size la taille de l'option
 	 * @param intitule le nom de l'option 
 	 * @param day l'ensemble d'options auquel il appartient (le jour)
 	 * @return une option
 	 */
-	public Option(int size, String intitule,int day){
+	public Option(int size, String title,int day){
 		accepted = new LinkedList<Student>();
 		this.size = size;
-		this.intitule = intitule;
+		this.title = title;
 		this.day = day;
 	}
 	
@@ -36,6 +59,6 @@ public class Option {
 	}
 	
 	public String toString() {
-		return "("+intitule+","+day+","+size+")";
+		return "("+title+","+day+","+size+")";
 	}
 }

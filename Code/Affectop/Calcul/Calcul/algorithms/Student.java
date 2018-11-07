@@ -1,38 +1,64 @@
-package calcul;
+package Calcul.algorithms;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+
+import Calcul.bean.Option;
 
 /**
- * La classe représentant un étudiant 
- * @author VALLET Mat
+ * Bean
+ * 
+ * @author Mathieu VALLET
+ * @version 1.0
  */
 
 public class Student {
 	/** 
 	 * le mail de l'étudiant
 	 */
-	public String mail;
+	private String mail;
 	/**
 	 * les options ou l'étudiant a été accepté
 	 */
-	public ArrayList<Option> affected;
+	private ArrayList<Option> affected;
 	/**
 	 * la liste des preferences del'étudiant par ordre decroissant d'interet pour chaques jours 
 	 */
-	public ArrayList<LinkedList<Option>> preferences;
+	private ArrayList<LinkedList<Option>> preferences;
+	
+	
+	
+	private List<Option>  optionValide;
+	private String numEtudiant;
+	
+	
 	/**
 	 * le constructeur de la classe student
 	 * @param mail le mail de l'étudiant
 	 * @param preferences les prefereces de l'etudiants par jours
 	 * @return un etudiant
 	 */
-	public Student(String mail,ArrayList<LinkedList<Option>> preferences) {
+	public Student(String mail,ArrayList<LinkedList<Option>> preferences,String numEtudiant,List<Option>  optionValide) {
 		this.mail = mail;
 		this.preferences = preferences;
 		this.affected = new ArrayList<>();
+		this.numEtudiant=numEtudiant;
+		this.optionValide=optionValide;
 	}
 	
+	public void setOptionValide(List<Option> optionValide) {
+		this.optionValide = optionValide;
+	}
+
+	public List<Option> getOptionValide() {
+		return optionValide;
+	}
+
+	public String getNumEtudiant() {
+		return numEtudiant;
+	}
+
 	public String toString() {
 		return mail+" "+preferences+" ";
 	}

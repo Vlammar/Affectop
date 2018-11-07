@@ -18,11 +18,11 @@ public class BaseReader implements BaseAdapter {
 		return "error";
 	}
 
-	private String nameRequest(String token) {
+	public String nameRequest(String token) {
 		return "nameRequest";
 	}
 
-	private String firstNameRequest(String token) {
+	public String firstNameRequest(String token) {
 
 		return "firstNameRequest";
 	}
