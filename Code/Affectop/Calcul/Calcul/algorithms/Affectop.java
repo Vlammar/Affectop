@@ -1,113 +1,207 @@
-package Calcul.algorithms;
+package calcul;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Random;
 
-
+/**
+ * La classe chargée de faire l'affectation 
+ * @author VALLET Mat
+ */
 public class Affectop {
-	public Map<Option, LinkedList<Option>> incompatibilites;
-	public Map<Student, LinkedList<Option>> availableOptions;
-	public ArrayList<Student> students;
-	public ArrayList<Option> options;
-	public Option recale = new Option(100000000, "recale", -1);
 	int nbDays;
-	
-	void printAffect(){
-		for(Student s : students)
-			System.out.println(s.mail+":   "+s.affected);
-		try{Thread.sleep(500);}catch(InterruptedException e){};
-	}
-	
-	public void makeIncompatibilities() {
-		for(Option o : options) {
-			incompatibilites.put(o,new LinkedList<Option>());
-		}
-		incompatibilites.put(recale,new LinkedList<Option>());
-		for(Option o1 : options)
-			for(Option o2 : options)
-				if(o1.day == o2.day || o1.title == o2.title) 
-					incompatibilites.get(o1).add(o2);
-				
-	}
-	
-	
-	public Affectop(ArrayList<Student> students, ArrayList<Option> options, int nbDays) {
-		this.incompatibilites = new HashMap<>();
+	ArrayList<Student> students;
+	ArrayList<ArrayList<Option>> options;
+		
+	/**
+	 * Constructeur de la classe
+	 * @param students les étudiants à affecter
+	 * @param options  les options par ensembles
+	 * @param nbDays   le nombre d'ensembles d'options
+	 * @return le resultat du constructeur
+	 */
+	public Affectop(ArrayList<Student> students,ArrayList<ArrayList<Option>> options ,int nbDays) {
 		this.students = students;
 		this.options = options;
 		this.nbDays = nbDays;
-
-		availableOptions = new HashMap<>();
-		makeIncompatibilities();
 	}
 
-	private Student getRandom(Option o) {
-		return o.accepted.get(Math.abs(new Random().nextInt() % o.accepted.size()));
-	}
-
-	private void affect(Student s, Option o) {
-		System.out.println("affected options :" +availableOptions.get(s));
-		printAffect();
-		if (!o.isFull()) { // il y a de la place, tout le monde est content
-			s.affected.add(o);
-			o.accepted.add(s);
-			availableOptions.get(s).removeAll(incompatibilites.get(o));
-		} else {
-			Student rejected = getRandom(o);
-			rejected.affected.remove(o);
-			o.accepted.remove(s);
-			o.accepted.add(s);
-			s.affected.add(o);
-			updateChoice(rejected, incompatibilites, availableOptions);
-			System.out.println("rejected "+rejected.mail+" options :"+availableOptions.get(rejected));
-			System.out.print("\t");
-			affect(rejected,availableOptions.get(rejected).getFirst());
-			
-		}
-	}
+	/**
+	 * Affecte les etudiants à une option d'un ensemble d'option en tenant compte des incompatibilités avec les options precedement affectees
+	 * @param incompatibilities le dictionnaire des incompatibilités entre options (clé : une option, valeur : toutes les options qui lui sont incompatibles)
+	 * @param d l'index de l'ensemble (le jour) dans lequel sont choisis les options
+	 * @param available le dictionnaire des options disponibles  (clé : un(e) etudiant(e), valeur : toutes les options qui lui sont disponibles)
+	 */
 	
-	private  void affectStudent(Student s, int nbOptions) {
-		LinkedList<Option> available = availableOptions.get(s);
-		while (s.affected.size() < nbOptions) { // tant qu'un étudiant est "célibataire"
-			System.out.println(available);
-			System.out.println(s.affected);
-			if(available == null || available.isEmpty())//si il n'y a plus d'options possibles
-				break;
-			Option firstChoice = available.get(0); // si erreur ajouter option vide !
-			
-			affect(s, firstChoice);
-		}
-	}
-
-	// utilisé juste apres reassign
-	private void updateChoice(Student s, Map<Option, LinkedList<Option>> incompatibilites,
-			Map<Student, LinkedList<Option>> availableOptions) {
-		LinkedList<Option> s_options = availableOptions.get(s);
+	public void affectOneDay(HashMap<Option, LinkedList<Option>> incompatibilities, int d,HashMap<Student, ArrayList<LinkedList<Option>>> available ) {
 		
-		s_options.clear();
-		s_options.addAll(s.preference);
-		s_options.add(recale);
-		for (Option o : s.affected) {
-			s_options.removeAll(incompatibilites.get(o));
+		for(Student s : students)
+			for(Option o : s.affected)
+				available.get(s).get(d).removeAll(incompatibilities.get(o));
+		
+		SimpleAffectop simpAffect = new SimpleAffectop(students,options.get(d),d);		
+		simpAffect.availableOptions.clear();
+		
+		
+		for(Student s : students) {
+			simpAffect.availableOptions.put(s,available.get(s).get(d));
+		}
+		
+		simpAffect.mariagesStable();
+
+
+	}
+
+	/**
+	 * Création du dictionnaire des options disponibles pour former les options a partir des préférences 
+	 * @return le dictionnaire des options disponibles
+	 */
+	HashMap<Student, ArrayList<LinkedList<Option>>> copyPreferences() {
+		HashMap<Student, ArrayList<LinkedList<Option>>> preferences = new  HashMap<>();
+
+		for(Student s : students) {
+			ArrayList<LinkedList<Option>> available = new ArrayList<>();
+			
+			for(LinkedList<Option> prefOneDay : s.preferences) {
+				LinkedList<Option> availableOneDay = new LinkedList<>();
+				availableOneDay.addAll(prefOneDay);
+				available.add(availableOneDay);
+			}
+			preferences.put(s, available);
+		}
+		
+		return preferences;
+	}
+	
+	/**
+	 * Affecte les etudiants à une option par ensemble ensemble d'options en tenant compte des incompatibilités
+	 * @param incompatibilities le dictionnaire des incompatibilités entre options (clé : une option, valeur : toutes les options qui lui sont incompatibles)
+	 */
+
+	public void affectStable(HashMap<Option, LinkedList<Option>> incompatibilities) {
+		
+		LinkedList<Integer> days = new LinkedList<>();
+		for(int d = 0 ; d < nbDays; d ++)
+			days.add(d);
+		Collections.shuffle(days);
+		HashMap<Student, ArrayList<LinkedList<Option>>> available = copyPreferences();
+		
+		for(int d :days) {
+			affectOneDay(incompatibilities, d, available);
+			System.out.println(test.AffectopTest.isStable(students, 3,incompatibilities));
 		}
 	}
 	
-	public void affectStable() {
-		availableOptions = new HashMap<>();
-		options.add(recale);
-		System.out.println(nbDays);
-		for (Student s : students) {
-			LinkedList<Option> s_available = new LinkedList<>();
-			s_available.addAll(s.preference);
-			s_available.add(recale);
-			availableOptions.put(s, s_available);
+//======================================================================+TEST A SUPP.	
+	
+	static ArrayList<Student> randomStudents(int nbStudents, ArrayList<ArrayList<Option>> options, int nbDays){
+		ArrayList<Student> result = new ArrayList<>();
+		for(int s = 0 ; s < nbStudents; s ++) {
+			ArrayList<LinkedList<Option>> preferences = new ArrayList<>();
+			for(int d = 0 ; d < nbDays; d ++) {
+				LinkedList<Option> choicesToday = new LinkedList<Option>();
+				choicesToday.addAll(options.get(d));
+				Collections.shuffle(choicesToday);
+				preferences.add(choicesToday);
+			}
+			result.add(new Student("s"+s, preferences));
 		}
-		for (Student s : students) {
-			affectStudent(s, nbDays);
+				
+		return result;
+	}
+	
+	// créé une incompatibilité par jour 
+	static HashMap<Option, LinkedList<Option>> makeRandomIncompatibilities(ArrayList<ArrayList<Option>> options) {
+		HashMap<Option, LinkedList<Option>> incompatibilities = new HashMap<>();
+		Random r = new Random();
+		for(int d = 0; d < options.size() ; d ++) {
+			for(Option opt : options.get(d))
+			incompatibilities.put(opt, new LinkedList<>());
 		}
-	}	
+		
+		for(int d1 = 0; d1 < options.size() ; d1 ++) {
+			for(Option opt1 : options.get(d1)) {
+				for(int d2 = 0; d2 < options.size() ; d2 ++) {
+					if(d1 == d2)
+						continue;
+					int randIndex = Math.abs(r.nextInt()%(options.get(d2).size()));
+					Option opt2 = options.get(d2).get(randIndex);//une option au hasard dans le groupement numéroté par d2
+					incompatibilities.get(opt1).add(opt2);//incompatibilités mutuelles
+					incompatibilities.get(opt2).add(opt1);//incompatibilités mutuelles
+				}
+			}
+		}
+		return incompatibilities;
+		
+	}
+	
+	static ArrayList<ArrayList<Option>> randomOptions(int nbDays, int[]minNbOptions,int[]maxNbOptions, int[]minSizeOptions,int[]maxSizeOptions){
+		ArrayList<ArrayList<Option>> answers = new ArrayList<ArrayList<Option>>();
+		
+		Random r = new Random();
+		
+		for(int d = 0; d < nbDays; d++) {
+			ArrayList<Option> todayOptions = new ArrayList<>();
+			
+			int nbOptionToday = minNbOptions[d]+Math.abs(r.nextInt()%(1+maxNbOptions[d]-minNbOptions[d]));
+			for(int o = 0; o < nbOptionToday ; o++) {
+				int opSize = minSizeOptions[d]+Math.abs(r.nextInt()%(1+maxSizeOptions[d]-minSizeOptions[d]));
+				todayOptions.add(new Option(opSize, "o"+o+"_"+d, d));
+			}
+			answers.add(todayOptions);
+		}
+		return answers;
+	}
+	
+	static boolean studentRespectsIncompatibilities(Student s,HashMap<Option,LinkedList<Option>> incompatibilities) {
+		for(Option opt :s.affected )
+			for(Option compatible :s.affected )
+				if(incompatibilities.get(opt).contains(compatible) && opt != compatible) {
+					System.out.println("INCOMPATIBILITE");
+					System.out.println("opt: "+opt +" "+compatible);
+					System.out.println("st : "+s+"   "+s.affected);
+					return false;
+				}
+		return true;
+	}
+	
+	static boolean respectsIncompatibilities(ArrayList<Student> students,HashMap<Option,LinkedList<Option>> incompatibilities) {
+		for(Student s : students)
+			if(!studentRespectsIncompatibilities(s,incompatibilities))
+				return false;
+		return true;
+	}
+	
+	static Result getBestResult(int launch,HashMap<Option, LinkedList<Option>> incompatibilities, ArrayList<Student> students, ArrayList<ArrayList<Option>> options,int nbDays) {
+		Result best = new Result(students);
+		for(int i = 0 ; i < launch ;i++){
+			for(Student s : students)
+				s .affected.clear();
+			for (ArrayList<Option> optionToday : options) {
+				for(Option o : optionToday)
+					o.accepted.clear();
+			}
+			Affectop currentAffect = new Affectop(students, options,nbDays);
+			System.out.println("===============");
+			currentAffect.affectStable(incompatibilities);
+			Result current = new Result(students);
+			
+			//System.out.println(best.satisfaction()+" "+current.satisfaction());
+			if(current .compareTo(best) > 0)
+				best = current;
+		}
+		return best;
+	}
+
+	
+	public static void main(String args[]) {
+		int nbDays = 3;
+		ArrayList<ArrayList<Option>> options= randomOptions(nbDays,new int[]{3,3,3},new int[]{5,5,5},new int[]{1,1,1},new int[]{2,2,2});
+		ArrayList<Student> students = randomStudents(20,options, nbDays);
+		HashMap<Option, LinkedList<Option>> incompatibilities = makeRandomIncompatibilities(options);
+		getBestResult(10,incompatibilities,students,options,nbDays);
+		
+	}
 }
- 

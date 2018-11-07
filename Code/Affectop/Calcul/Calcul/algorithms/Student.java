@@ -1,34 +1,51 @@
-package Calcul;
+package calcul;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+/**
+ * La classe représentant un étudiant 
+ * @author VALLET Mat
+ */
 
 public class Student {
-	//le mail de l'etudiant
+	/** 
+	 * le mail de l'étudiant
+	 */
 	public String mail;
-	//les options ou l'etudiant a ete accepte
+	/**
+	 * les options ou l'étudiant a été accepté
+	 */
 	public ArrayList<Option> affected;
-	//la liste des preferences de l'etudiant par ordre decroissant d'interet
-	public LinkedList<Option> preference;
-	
-	
-	public Student(String mail,LinkedList<Option> preference) {
+	/**
+	 * la liste des preferences del'étudiant par ordre decroissant d'interet pour chaques jours 
+	 */
+	public ArrayList<LinkedList<Option>> preferences;
+	/**
+	 * le constructeur de la classe student
+	 * @param mail le mail de l'étudiant
+	 * @param preferences les prefereces de l'etudiants par jours
+	 * @return un etudiant
+	 */
+	public Student(String mail,ArrayList<LinkedList<Option>> preferences) {
 		this.mail = mail;
-		this.preference = preference;
+		this.preferences = preferences;
 		this.affected = new ArrayList<>();
 	}
 	
 	public String toString() {
-		return mail+" "+preference+" ";
+		return mail+" "+preferences+" ";
 	}
 	
-	//NB je n'aime pas comment cette methode fonctionne, TODO a refaire de facon plus clair
+	
+	/**
+	 * Donne la satisfaction de l'étudiant
+	 * @return la satisfaction
+	 */
 	public int getSatisfaction() {
 		int satis = 0;
-		for(Option o:affected) {
-			satis -= preference.indexOf(o);
-			
+		for(int d = 0 ; d < affected.size(); d ++) {
+			satis += preferences.get(d).size()-preferences.get(d).indexOf(affected.get(d));
 		}
 		return satis;
 	}
