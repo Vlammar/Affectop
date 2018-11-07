@@ -11,13 +11,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class mail {
+public class MailManager {
 	final private String subject;
 	final private String content;
 	final private String from;
 	final private Address[] to;
 	
-	public mail(String subject,String content,String from,Address[] to){
+	public MailManager(String subject,String content,String from,Address[] to){
 		this.subject=subject;
 		this.content=content;
 		this.from=from;

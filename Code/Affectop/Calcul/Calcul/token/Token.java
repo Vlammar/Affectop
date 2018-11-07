@@ -4,7 +4,7 @@ import java.util.Random;
 import Calcul.exceptions.TokenLengthException;
 
 /**
- * Class to manage Tokens
+ * Class to generate Tokens
  * 
  * @author Valentin JABRE
  * @version 1.0

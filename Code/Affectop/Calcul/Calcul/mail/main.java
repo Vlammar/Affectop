@@ -70,7 +70,7 @@ public class main {
 		
 			e.printStackTrace();
 		}
-		mail m = new mail("test", "contenu", "noreply.Affectop@etu.univ-amu.fr", to);
+		MailManager m = new MailManager("test", "contenu", "noreply.Affectop@etu.univ-amu.fr", to);
 		m.sendMail();
 
 	}
