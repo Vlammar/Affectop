@@ -6,12 +6,15 @@ Ce programme est écrit en JAVA et utilise une base
 
 ## Nouveautées
 
+## Utilisation 
+
 
 ## Installation
 
 ## Prérequis
 - `JAVA 8`ou plus récent
-- serveur tomcat7 ou +
+- serveur tomcat9 ou +
+- mysql
 
 ## Crédits
 Auteurs:
