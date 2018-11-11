@@ -16,7 +16,7 @@ MIT
 - serveur tomcat7 ou +
 
 ## Crédits
-Auteurs:
+Auteurs:\n
 Valentin JABRE
 Mathieu VALLET
 Mohamed MOKADDEM
