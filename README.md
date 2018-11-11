@@ -14,3 +14,9 @@ MIT
 ## Prérequis
 - `JAVA 8`ou plus récent
 - serveur tomcat7 ou +
+
+## Crédits
+Valentin JABRE
+Mathieu VALLET
+Mohamed MOKADDEM
+Mohamed CHABANE
