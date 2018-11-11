@@ -20,3 +20,6 @@ Valentin JABRE
 Mathieu VALLET
 Mohamed MOKADDEM
 Mohamed CHABANE
+
+## Licence
+MIT Licence
