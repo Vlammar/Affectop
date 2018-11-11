@@ -17,8 +17,8 @@ MIT
 
 ## Crédits
 Auteurs:
-Valentin JABRE
-Mathieu VALLET
-Mohamed MOKADDEM
-Mohamed CHABANE
+- Valentin JABRE
+- Mathieu VALLET
+- Mohamed MOKADDEM
+- Mohamed CHABANE
 
