@@ -101,7 +101,7 @@ public class ExcelReader implements ExcelAdapter {
 		Row row = cell.getRow();
 		Sheet sheet = cell.getSheet();
 		int tabular_row_start = cell.getRowIndex(), tabular_column_start = cell.getColumnIndex();
-		//Iterator<Row> iter = sheet.iterator();
+		
 		int r = 0;
 
 		while (row.getCell(tabular_column_start) != null

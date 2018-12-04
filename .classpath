@@ -31,5 +31,7 @@
 	<classpathentry kind="lib" path="C:/Travail/GL/Affectop/API/poi-bin-4.0.0-20180907/poi-4.0.0/lib/jaxb-impl-2.3.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Travail/GL/Affectop/API/poi-bin-4.0.0-20180907/poi-4.0.0/lib/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="C:/Travail/GL/Affectop/API/poi-bin-4.0.0-20180907/poi-4.0.0/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="C:/Travail/GL/Affectop/API/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Travail/GL/Affectop/API/mysql-connector-java-5.1.21.jar"/>
 	<classpathentry kind="output" path="Code/Affectop/bin"/>
 </classpath>

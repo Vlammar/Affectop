@@ -16,16 +16,18 @@ public class BaseReader implements BaseAdapter {
 		 * 
 		 * Created by Alvin Alexander, http://alvinalexander.com
 		 */
-	/*	try {
+		try {
 			// create our mysql database connection
 			String myDriver = "com.mysql.jdbc.Driver";
-			String myUrl = "jdbc:mysql://localhost/test";
+			
+			String myUrl = "jdbc:mysql://51.75.120.5/affectop_test";
+			System.out.println(myUrl);
 			Class.forName(myDriver);
-			Connection conn = DriverManager.getConnection(myUrl, "root", "");
-
+			Connection conn = DriverManager.getConnection(myUrl, "baseaccess", "affectop2018");
+			System.out.println(conn);
 			// our SQL SELECT query.
 			// if you only need a few columns, specify them by name instead of using "*"
-			String query = "SELECT * FROM users";
+			String query = "SELECT * FROM Students";
 
 			// create the java statement
 			Statement st = conn.createStatement();
@@ -34,22 +36,23 @@ public class BaseReader implements BaseAdapter {
 			ResultSet rs = st.executeQuery(query);
 
 			// iterate through the java resultset
+			System.out.println("Affichage :");
 			while (rs.next()) {
-				int id = rs.getInt("id");
-				String firstName = rs.getString("first_name");
-				String lastName = rs.getString("last_name");
-				Date dateCreated = rs.getDate("date_created");
-				boolean isAdmin = rs.getBoolean("is_admin");
-				int numPoints = rs.getInt("num_points");
-
+				String token = rs.getString("token");
+				String firstName = rs.getString("firstName");
+				String lastName = rs.getString("lastName");
+				String numetu = rs.getString("numEtudiant");
+				String mail = rs.getString("mail");
+				String step = rs.getString("step");
+				String year = rs.getString("year");
 				// print the results
-				System.out.format("%s, %s, %s, %s, %s, %s\n", id, firstName, lastName, dateCreated, isAdmin, numPoints);
+				System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
 			}
 			st.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-*/
+
 	}
 
 	
