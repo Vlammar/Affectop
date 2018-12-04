@@ -59,7 +59,7 @@ public class main {
 
 		Address[] to = new Address[5];
 		try {
-			to[0] = new InternetAddress("valentin.jabre@gmail.com");
+			to[0] = new InternetAddress("valenftin.jabre@gmail.com");
 
 			to[1] = new InternetAddress("valentin.jabre@etu.univ-amu.fr");
 
@@ -70,8 +70,9 @@ public class main {
 		
 			e.printStackTrace();
 		}
-		MailManager m = new MailManager("test", "contenu", "noreply.Affectop@etu.univ-amu.fr", to);
+		MailManager m = new MailManager("", "contenu", "noreply.Affectop@etu.univ-amu.fr", to);
 		m.sendMail();
+		
 
 	}
 }

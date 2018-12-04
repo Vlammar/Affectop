@@ -6,20 +6,20 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+
 import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
 import Calcul.bean.Eleve;
+import Calcul.exceptions.UnexpectedFileException;
 import Calcul.exceptions.cellNameException;
 
 public class ExcelReader implements ExcelAdapter {
@@ -43,26 +43,21 @@ public class ExcelReader implements ExcelAdapter {
 
 	@Override
 	public List<Eleve> request(String path) {
-		// test
-		/*Position r = getPosition("AZ265");
-		System.out.println("colonne " + r.getColumn());
-		System.out.println("ligne " + r.getLine());
-		return null;*/
-		
+
 		Workbook wb = fileReader(path);
-		Position p=getPosition("A1");
-		TreeMap<String, ArrayList<Cell>> res=tabularReader(wb, wb.getSheetAt(0).getRow(p.line).getCell(p.column), 8);
-		for(Entry<String, ArrayList<Cell>> e : res.entrySet()) {
+		Position p = getPosition("A1");
+		TreeMap<String, ArrayList<Cell>> res = tabularReader(wb, wb.getSheetAt(0).getRow(p.line).getCell(p.column), 8);
+		for (Entry<String, ArrayList<Cell>> e : res.entrySet()) {
 			System.out.println(e.getKey());
-			for(int i=0;i<e.getValue().size();i++) {
-				//PB si nb 
-				if(e.getValue().get(i).getCellType()==CellType.STRING)
+			for (int i = 0; i < e.getValue().size(); i++) {
+				// PB si nb
+				if (e.getValue().get(i).getCellType() == CellType.STRING)
 					System.out.println(e.getValue().get(i).getStringCellValue());
-				if(e.getValue().get(i).getCellType()==CellType.NUMERIC)
+				if (e.getValue().get(i).getCellType() == CellType.NUMERIC)
 					System.out.println(e.getValue().get(i).getNumericCellValue());
 			}
 		}
-	
+
 		return null;
 	}
 
@@ -77,7 +72,16 @@ public class ExcelReader implements ExcelAdapter {
 
 		try (InputStream inp = new FileInputStream(path)) {
 			System.out.println(path);
+			if(path.endsWith("xlsx")){
+				wb = XSSFWorkbookFactory.create(inp);;
+			}else if(path.endsWith("xls")){
+				wb = HSSFWorkbookFactory.create(inp);
+			}else{
+				throw new UnexpectedFileException();
+			}
+			
 			wb = XSSFWorkbookFactory.create(inp);
+			System.out.println("wb created");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -88,6 +92,7 @@ public class ExcelReader implements ExcelAdapter {
 	 * Read a tabular which start at the specified cell and read until it reach a
 	 * null row, width specifies the width of the tabular The format is key value
 	 * value ... key value value ...
+	 * 
 	 * @version 2.0
 	 */
 	public static TreeMap<String, ArrayList<Cell>> tabularReader(Workbook wb, Cell cell, int width) {
@@ -96,7 +101,7 @@ public class ExcelReader implements ExcelAdapter {
 		Row row = cell.getRow();
 		Sheet sheet = cell.getSheet();
 		int tabular_row_start = cell.getRowIndex(), tabular_column_start = cell.getColumnIndex();
-		Iterator<Row> iter = sheet.iterator();
+		//Iterator<Row> iter = sheet.iterator();
 		int r = 0;
 
 		while (row.getCell(tabular_column_start) != null
@@ -194,6 +199,16 @@ public class ExcelReader implements ExcelAdapter {
 		return pos;
 	}
 
+	/**
+	 * Convert an excel row name into an integer AB=27
+	 * 
+	 * @param string
+	 *            the string you want to convert
+	 * @return the converted string
+	 * @throws cellNameException if the given name is not of the type [A-Z]+
+	 * @version 1.1
+	 * @author Valentin JABRE
+	 */
 	private int charToInt(String string) throws cellNameException {
 		int res = 0;
 		for (int i = string.length() - 1; i >= 0; i--) {
