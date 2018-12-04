@@ -2,15 +2,24 @@
 Travail projet gestion des affectations des options.
 Ce programme est écrit en JAVA et utilise une base 
 
-## Licence
-MIT
 ## Version 0.1
 
 ## Nouveautées
+
+## Utilisation 
 
 
 ## Installation
 
 ## Prérequis
 - `JAVA 8`ou plus récent
-- serveur tomcat7 ou +
+- serveur tomcat9 ou +
+- mysql
+
+## Crédits
+Auteurs:
+- Valentin JABRE
+- Mathieu VALLET
+- Mohamed MOKADDEM
+- Mohamed CHABANE
+
