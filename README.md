@@ -21,5 +21,5 @@ Auteurs:
 - Valentin JABRE
 - Mathieu VALLET
 - Mohamed MOKADDEM
-- Mohamed CHABANE
+- Mohamed CHAABANE
 
