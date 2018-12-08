@@ -1,5 +1,4 @@
-package calcul;
-
+package Calcul.bean;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -14,11 +13,11 @@ public class Student {
 	 */
 	public String mail;
 	/**
-	 * les options ou l'étudiant a été accepté
+	 * les options où l'étudiant a été accepté
 	 */
 	public Option [] affected;
 	/**
-	 * la liste des preferences del'étudiant par ordre decroissant d'interet pour chaques jours 
+	 * la liste des preferences de l'étudiant par ordre décroissant d'interet pour chaques jours 
 	 */
 	public ArrayList<LinkedList<Option>> preferences;
 	
@@ -52,7 +51,7 @@ public class Student {
 		return satis * satis;
 	}
 	
-	LinkedList<Option> getPreferences(int d) {
+	public LinkedList<Option> getPreferences(int d) {
 		return this.preferences.get(d);
 	}
 	
@@ -61,7 +60,7 @@ public class Student {
 	 * @return true if the student is affected to this option
 	 */
 	public boolean isAffectedTo(Option opt) {
-		return affected[opt.day] == opt;
+		return affected[opt.group] == opt;
 	}
 	
 	/**

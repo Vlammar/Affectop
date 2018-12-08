@@ -1,10 +1,13 @@
-package calcul;
+package Calcul.algorithms.calcul;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import Calcul.bean.Option;
+import Calcul.bean.Student;
 
 /**
  * La classe chargée de faire l'affectation 

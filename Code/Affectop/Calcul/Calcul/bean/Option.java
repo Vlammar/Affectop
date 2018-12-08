@@ -1,62 +1,44 @@
 package Calcul.bean;
 
-import java.util.Date;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Bean
  * 
- * @author Valentin JABRE
- * @version 1.0
+ * @author Mathieu Vallet
+ * @version 2.0
  */
 public class Option {
-	private String nom;
-
-	private String description;
-	private List<Date> dates;
-
-	public Option(String nom, String description, List<Date> dates) {
-		this.nom = nom;
-		this.description = description;
-		this.dates = dates;
+	//la taille de l'option
+	public int size;
+	//la liste des étudiants
+	public LinkedList<Student> accepted;
+	//le nom de l'option
+	public String intitule;
+	//le groupe d'options auquel il appartient (le jour)
+	public int group;
+	
+	/** Constructeur d'option
+	 * @param size la taille de l'option
+	 * @param intitule le nom de l'option 
+	 * @param day l'ensemble d'options auquel il appartient (le jour)
+	 * 
+	 */
+	public Option(int size, String intitule,int day){
+		accepted = new LinkedList<Student>();
+		this.size = size;
+		this.intitule = intitule;
+		this.group = day;
 	}
-
-	public String getNom() {
-		return nom;
+	
+	/**
+	 * @return vrai si l'option est pleine
+	 */
+	public boolean isFull() {
+		return size <= accepted.size(); 
 	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<Date> getDates() {
-		return dates;
-	}
-
-	public void setDates(List<Date> dates) {
-		this.dates = dates;
-	}
+	
 	public String toString() {
-		String s= nom+": "+description+" le ";
-		for(int i=0;i<dates.size();i++) {
-			Date d=dates.get(i);
-			s+=d.toString();
-			if(i<dates.size()-1) {
-				s+=" et le ";
-			}
-			else {
-				s+=".";
-			}
-			
-		}
-		return s;
+		return "("+intitule+","+group+","+size+")";
 	}
 }

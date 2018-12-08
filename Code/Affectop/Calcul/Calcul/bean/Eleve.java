@@ -11,16 +11,16 @@ import java.util.List;
  */
 public class Eleve extends MembreAmu{
 	private Promotion promotion;
-	private List<Option>  optionValidé;
+	private List<Option>  optionValide;
 	private String numEtudiant;
 
-	public Eleve(String nom, String prenom, String adresseMail, Promotion promotion, List<Option> optionValidé,
+	public Eleve(String nom, String prenom, String adresseMail, Promotion promotion, List<Option> optionValidï¿½,
 			String numEtudiant) {
 		super(nom, prenom, adresseMail);
 		this.promotion = promotion;
-		if(optionValidé==null)
-			optionValidé=new ArrayList<>();
-		this.optionValidé = optionValidé;
+		if(optionValidï¿½==null)
+			optionValidï¿½=new ArrayList<>();
+		this.optionValidï¿½ = optionValidï¿½;
 		this.numEtudiant = numEtudiant;
 	}
 
@@ -32,12 +32,12 @@ public class Eleve extends MembreAmu{
 		this.promotion = promotion;
 	}
 
-	public List<Option> getOptionValidé() {
-		return optionValidé;
+	public List<Option> getOptionValidï¿½() {
+		return optionValidï¿½;
 	}
 
-	public void setOptionValidé(List<Option> optionValidé) {
-		this.optionValidé = optionValidé;
+	public void setOptionValidï¿½(List<Option> optionValidï¿½) {
+		this.optionValidï¿½ = optionValidï¿½;
 	}
 
 	public String getNumEtudiant() {
@@ -48,6 +48,6 @@ public class Eleve extends MembreAmu{
 		this.numEtudiant = numEtudiant;
 	}
 	public String toString() {
-		return "["+numEtudiant+"] a validé"+optionValidé.toString();
+		return "["+numEtudiant+"] a validï¿½"+optionValidï¿½.toString();
 	}
 }

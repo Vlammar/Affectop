@@ -1,6 +1,8 @@
-package calcul;
+package Calcul.algorithms.calcul;
 
 import java.util.ArrayList;
+import Calcul.bean.Option;
+import Calcul.bean.Student;
 
 public class Result implements Comparable<Result>{
 	public class Affectation {
@@ -28,7 +30,7 @@ public class Result implements Comparable<Result>{
 		int satisfaction = 0;
 		for(Affectation a : results) {
 			for(Option opt  : a.s.affected)
-				satisfaction += a.s.preferences.get(opt.day).size() - a.s.preferences.get(opt.day).indexOf(opt);
+				satisfaction += a.s.preferences.get(opt.group).size() - a.s.preferences.get(opt.group).indexOf(opt);
 			satisfaction -= (a.options.size() - a.s.preferences.size()) * 10;
 		}
 		return satisfaction;

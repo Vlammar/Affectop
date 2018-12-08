@@ -1,7 +1,8 @@
-package calcul;
+package Calcul.algorithms.calcul;
 
 import java.util.ArrayList;
-
+import Calcul.bean.Option;
+import Calcul.bean.Student;
 public class Reaffector {
 	ArrayList<Student> scatterbrainStudent;
 	ArrayList<ArrayList<Option>> options;

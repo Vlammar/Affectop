@@ -1,4 +1,4 @@
-package test;
+package Calcul.algorithms.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-
 import org.junit.Test;
-import calcul.Option;
-import calcul.SimpleAffectop;
-import calcul.Student;
+
+import Calcul.bean.Option;
+import Calcul.bean.Student;
+import Calcul.algorithms.calcul.SimpleAffectop;
 
 public class SimpleAffectopTest {
 

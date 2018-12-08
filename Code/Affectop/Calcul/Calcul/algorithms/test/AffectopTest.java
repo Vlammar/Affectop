@@ -1,4 +1,4 @@
-package test;
+package Calcul.algorithms.test;
 
 import static org.junit.Assert.*;
 
@@ -10,16 +10,16 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import calcul.Option;
-import calcul.Affectop;
-import calcul.Student;
+import Calcul.bean.Option;
+import Calcul.bean.Student;
+import Calcul.algorithms.calcul.Affectop;
 
 
 public class AffectopTest {
 	
 	
 	private boolean areIncompatibles(Option opt1, Option opt2,HashMap<Option, LinkedList<Option>> incompatibilities) {
-		return opt1.day == opt2.day || incompatibilities.get(opt1).contains(opt2) ||incompatibilities.get(opt2).contains(opt1);
+		return opt1.group == opt2.group || incompatibilities.get(opt1).contains(opt2) ||incompatibilities.get(opt2).contains(opt1);
 	}
 	
 	static boolean respectsIncompatibilities(ArrayList<Student> students,HashMap<Option,LinkedList<Option>> incompatibilities) {
@@ -71,17 +71,17 @@ public class AffectopTest {
 		return pref;
 	}
 	
-	boolean areWillingToExchange(Student s1,Option opt1, Student s2,Option opt2,int day) {
+	boolean areWillingToExchange(Student s1,Option opt1, Student s2,Option opt2,int group) {
 		if(s1.isAffectedTo(opt2) || s2.isAffectedTo(opt1))
 			return false;
 		for(Option o : s1.affected)
 			if(o!=null)
-				if(o!= opt1 && (opt2.day == o.day || opt2.intitule == o.intitule)) {
+				if(o!= opt1 && (opt2.group == o.group || opt2.intitule == o.intitule)) {
 					return false;
 				}
 		for(Option o : s2.affected)
 			if(o!=null)
-				if(o!= opt2 && opt1.day == o.day || opt1.intitule == o.intitule) {
+				if(o!= opt2 && opt1.group == o.group || opt1.intitule == o.intitule) {
 					return false;
 				}
 		return false;

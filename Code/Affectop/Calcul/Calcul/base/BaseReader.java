@@ -1,6 +1,7 @@
 package Calcul.base;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 
@@ -152,7 +153,38 @@ public class BaseReader implements BaseAdapter {
 			return 2;
 		return 0;
 	}
-	
+
+	//TODO ne marche pas car on va confondre les années et les sessions, il faut une jointure entre le prof et les options puis avec les prefs et leseleves
+	public ArrayList<String> studentsValidateListRequest() {
+		ArrayList<String> students = new ArrayList<>();
+
+		String query = "SELECT token FROM Students WHERE numEtudiant in (SELECT DISTINCT numEtudiant FROM  Preferences );";
+	//	String query = "SELECT * FROM Students INNER JOIN Teachers ON table1.id = table2.fk_id ;";
+		Statement st;
+		String res = "";
+		try {
+			st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);
+
+			// iterate through the java resultset
+
+			while (rs.next()) {
+
+				res = rs.getString("token");
+				students.add(res);
+			}
+			st.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return students;
+
+	}
 
 	private String affectListRequest(String token) {
 
