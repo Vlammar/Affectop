@@ -1,0 +1,88 @@
+package baseIO;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import calcul.Option;
+import calcul.Result;
+import calcul.Result.Affectation;
+
+public class BaseWriter extends BaseHandler{
+	Statement st ;
+	
+	public void initConnection() {
+		ResultSet getResultOfQuery(String query) {
+		/**
+		 * A Java MySQL SELECT statement example. Demonstrates the use of a SQL SELECT
+		 * statement against a MySQL database, called from a Java program.
+		 * 
+		 * Created by Alvin Alexander, http://alvinalexander.com
+		 */
+		try {
+			// create our mysql database connection
+			String myDriver = "com.mysql.jdbc.Driver";
+			
+			String myUrl = "jdbc:mysql://51.75.120.5/affectop_test";
+			
+			Class.forName(myDriver);
+			Connection conn = DriverManager.getConnection(myUrl, "baseaccess", "affectop2018");
+			
+			st = conn.createStatement();
+		}
+		catch (Exception e) {
+		
+		}
+	}
+
+
+	public void endConnection() {
+		st.close();
+	}
+	
+	public void writeResults(int year,Result r ){
+		StringBuilder query = new StringBuilder();
+		query.append("INSERT INTO Results (optionId, numEtudiant)\n"); 
+		try {
+			for (Affectation aff : r.results) {
+				for(Option opt : aff.options)
+					query.append("(" +opt.id+" "+aff.s.numEtu+"),\n"); 
+			}
+			query.replace (query.length()-2,query.length()-1,";");
+			System.out.println(query.toString());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}	
+
+	public void writeStudent(int year,
+							String lastName,
+							String firstName,
+							String numEtu,
+							String mail,
+							String token,
+							String step) {
+		
+		String query = "INSERT INTO Students (year,lastName,firstName,numEtudiant,mail,token,step)"+
+							"("+year+","+lastName+","+firstName+","+numEtu+","+mail+","+token+","+step+")";
+		try {
+			st.executeQuery(query);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public static void main(String[] args) {
+		BaseWriter b = new BaseWriter();
+		b.initConnection();
+		b.writeStudent(1,"Jesus","Christ","1","JEEZ@eden.com","aaaaaaaaaaaaaaaa","1");
+		b.endConnection();
+	}
+	
+}

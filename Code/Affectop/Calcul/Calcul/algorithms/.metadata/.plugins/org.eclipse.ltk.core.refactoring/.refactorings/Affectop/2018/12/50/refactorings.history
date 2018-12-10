@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;baseIO.baseHandler&apos; to &apos;BaseHandler&apos;&#x0A;- Original project: &apos;Affectop&apos;&#x0A;- Original element: &apos;baseIO.baseHandler&apos;&#x0A;- Renamed element: &apos;baseIO.BaseHandler&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;baseHandler&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;baseIO{baseHandler.java[baseHandler" matchStrategy="1" name="BaseHandler" qualified="false" references="true" similarDeclarations="false" stamp="1544436253818" textual="false" version="1.0"/>
+</session>
