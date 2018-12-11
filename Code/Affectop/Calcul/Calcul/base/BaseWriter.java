@@ -5,7 +5,7 @@ public class BaseWriter {
 		
 		
 	}
-	public void addStudent(Student s) {
+	public void addStudent(String token, String lastname,String firstname,String numetudiant,String mail,String step,int year) {
 		
 		
 	}

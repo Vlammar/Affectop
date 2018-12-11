@@ -12,15 +12,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 import Calcul.base.BaseReader;
 import Calcul.exceptions.UnexpectedFileException;
-import Calcul.mail.MailManager;
 
 public class TxtToMail {
-
-	private MailManager mail;
 
 	private File txtFile;
 
@@ -31,7 +26,6 @@ public class TxtToMail {
 
 		String fileName = s[s.length - 1];
 		s = fileName.split("\\.");
-	
 
 		s = fileName.split("[.]");
 
@@ -44,24 +38,24 @@ public class TxtToMail {
 		try (Scanner sc = new Scanner(txtFile)) {
 
 			while (sc.hasNext()) {
-				
-				str += sc.nextLine()+"\n";
-				
+
+				str += sc.nextLine() + "\n";
+
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Map<String,String> m=readMail("to", "token", str);
-		
-		
-		for(Object key:m.keySet()) { System.out.println("Clef de la map "+key+" Valeur "+m.get(key)); }
+		Map<String, String> m = readMail("to", "token", str);
 
+		for (Object key : m.keySet()) {
+			System.out.println("Clef de la map " + key + " Valeur " + m.get(key));
+		}
 
 	}
 
-	public Map<String,String> readMail(String to, String token, String txt) {
-		HashMap<String,String> table=new HashMap<>();
+	public Map<String, String> readMail(String to, String token, String txt) {
+		HashMap<String, String> table = new HashMap<>();
 		BaseReader br = new BaseReader();
 
 		Map<String, ArrayList<String>> map = tagChecker(txt);
@@ -71,15 +65,14 @@ public class TxtToMail {
 
 			txt = txt.replace(balise, br.tagRequest(balise, token));
 		}
-		
-		String subject="Subject:";
-		String content="Content:";
-		subject=txt.substring(txt.indexOf(subject)+subject.length(), txt.indexOf(content));
-		content=txt.substring(txt.indexOf(content)+content.length());
-		table.put("subject",subject );
+
+		String subject = "Subject:";
+		String content = "Content:";
+		subject = txt.substring(txt.indexOf(subject) + subject.length(), txt.indexOf(content));
+		content = txt.substring(txt.indexOf(content) + content.length());
+		table.put("subject", subject);
 		table.put("content", content);
-		
-		
+
 		return table;
 	}
 
@@ -88,7 +81,8 @@ public class TxtToMail {
 	/**
 	 * Return all tag that don't belong to the listeTag, case sensitive
 	 * 
-	 * @param txt the string that need to be checked
+	 * @param txt
+	 *            the string that need to be checked
 	 * @return an ArrayList of String containing all tag that are not valid
 	 * @author Valentin JABRE
 	 * @version 1.2
@@ -108,13 +102,13 @@ public class TxtToMail {
 			result.add(matcher.group(0));
 
 		}
-		// Ajoute dans le dictionnaire à Valid l'ensemble des tags valides
+		// Ajoute dans le dictionnaire ï¿½ Valid l'ensemble des tags valides
 		res.put("Valid", result);
 
 		// Si un tag est valide on le retire de la chaine de travail
 		String s = txt.replaceAll("<[" + listeTag + "]+>", "");
 
-		// Si il existe un tag non reconnu on l'ajoute à la liste des invalides
+		// Si il existe un tag non reconnu on l'ajoute ï¿½ la liste des invalides
 		patern = Pattern.compile("<[a-zA-Z0-9]*>");
 		matcher = patern.matcher(s);
 		result = new ArrayList<>();

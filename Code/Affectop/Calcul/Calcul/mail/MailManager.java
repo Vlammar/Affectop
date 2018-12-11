@@ -62,7 +62,7 @@ public class MailManager {
 			tr.sendMessage(message, message.getAllRecipients());
 
 			tr.close();
-			System.out.println("Messages envoyés ....");
+			System.out.println("Messages envoyï¿½s ....");
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
 		}

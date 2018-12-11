@@ -18,9 +18,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
+import Calcul.base.BaseWriter;
 import Calcul.bean.Eleve;
+import Calcul.exceptions.TokenLengthException;
 import Calcul.exceptions.UnexpectedFileException;
 import Calcul.exceptions.cellNameException;
+import Calcul.token.Token;
 
 public class ExcelReader implements ExcelAdapter {
 	public class Position {
@@ -42,46 +45,58 @@ public class ExcelReader implements ExcelAdapter {
 	}
 
 	@Override
-	public List<Eleve> request(String path) {
+	public void request(String path) {
+		BaseWriter bw = new BaseWriter();
 
 		Workbook wb = fileReader(path);
-		Position p = getPosition("A1");
+		Position p = getPosition("A2");
+		ArrayList<String> tokenlist;
 		TreeMap<String, ArrayList<Cell>> res = tabularReader(wb, wb.getSheetAt(0).getRow(p.line).getCell(p.column), 8);
-		for (Entry<String, ArrayList<Cell>> e : res.entrySet()) {
-			System.out.println(e.getKey());
-			for (int i = 0; i < e.getValue().size(); i++) {
-				// PB si nb
-				if (e.getValue().get(i).getCellType() == CellType.STRING)
-					System.out.println(e.getValue().get(i).getStringCellValue());
-				if (e.getValue().get(i).getCellType() == CellType.NUMERIC)
-					System.out.println(e.getValue().get(i).getNumericCellValue());
-			}
+		try {
+			tokenlist = Token.generateTokenList(20, res.size());
+		} catch (TokenLengthException e1) {
+			e1.printStackTrace();
+			return;
 		}
+		int cpt = 0;
+		for (Entry<String, ArrayList<Cell>> e : res.entrySet()) {
+			
 
-		return null;
+			String token = tokenlist.get(cpt);
+			String lastname = e.getValue().get(0).getStringCellValue();
+			String firstname = e.getValue().get(1).getStringCellValue();
+			String numetudiant = e.getKey();
+
+			String mail = e.getValue().get(6).getStringCellValue();
+			String step = e.getValue().get(2).getStringCellValue();
+			Cell c = e.getValue().get(5);
+			
+			int year = c.getCellType() == CellType.NUMERIC ? (int) c.getNumericCellValue() : Integer.parseInt(c.getStringCellValue());
+			System.out.println(token + " " + lastname + " " + firstname + " " + numetudiant + " " + mail + " " + step
+					+ " " + year);
+			cpt++;
+			bw.addStudent(token, lastname, firstname, numetudiant, mail, step, year);
+
+		}
 	}
 
 	/**
 	 * Open a file with .xlsx and return a workbook
 	 *
 	 */
-	// TODO replace the filestream by a file
+	// TODO replace the filestream by a file, increase speed recommended by poi doc
 	private Workbook fileReader(String path) {
-		// TODO traiter le cas pour les .xls
 		Workbook wb = null;
 
 		try (InputStream inp = new FileInputStream(path)) {
-			System.out.println(path);
-			if(path.endsWith("xlsx")){
-				wb = XSSFWorkbookFactory.create(inp);;
-			}else if(path.endsWith("xls")){
+
+			if (path.endsWith("xlsx")) {
+				wb = XSSFWorkbookFactory.create(inp);
+			} else if (path.endsWith("xls")) {
 				wb = HSSFWorkbookFactory.create(inp);
-			}else{
+			} else {
 				throw new UnexpectedFileException();
 			}
-			
-			wb = XSSFWorkbookFactory.create(inp);
-			System.out.println("wb created");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,7 +116,7 @@ public class ExcelReader implements ExcelAdapter {
 		Row row = cell.getRow();
 		Sheet sheet = cell.getSheet();
 		int tabular_row_start = cell.getRowIndex(), tabular_column_start = cell.getColumnIndex();
-		
+
 		int r = 0;
 
 		while (row.getCell(tabular_column_start) != null
@@ -111,6 +126,7 @@ public class ExcelReader implements ExcelAdapter {
 			row = sheet.getRow(tabular_row_start + r);
 
 			if (row == null) {
+				System.out.println(tabular_row_start + r);
 				System.out.println("row null " + r);
 				break;
 			}
@@ -119,11 +135,17 @@ public class ExcelReader implements ExcelAdapter {
 				continue;
 			}
 			ArrayList<Cell> line = new ArrayList<>();
+			int key = 2;
 			// lecture de la ligne
-			for (int i = 1; i < width; i++) {
+			for (int i = 0; i < width; i++) {
+				if (i == key)
+					continue;// on utilise le num étudiant en tant que clé pour le dictionnaire
 				line.add(row.getCell(tabular_column_start + i));
 			}
-			m.putIfAbsent(row.getCell(tabular_column_start).getStringCellValue(), line);
+			Cell c = row.getCell(key);
+			String value = c.getCellType() == CellType.NUMERIC ? "" + (int) c.getNumericCellValue()
+					: c.getStringCellValue();
+			m.putIfAbsent(value, line);
 			r++;
 		}
 		return m;
@@ -167,22 +189,6 @@ public class ExcelReader implements ExcelAdapter {
 		return m;
 	}
 
-	// Utilities
-	private void readTabular(String from, String to) {
-		Position start = getPosition(from);
-		Position end = getPosition(to);
-
-		// la ligne 1 contient les noms des colonnes des tableaux
-		int l = start.getLine();
-
-		for (; l < end.getLine(); l++) {
-			for (int c = start.getColumn(); c < end.getColumn(); c++) {
-
-			}
-		}
-
-	}
-
 	private Position getPosition(String s) {
 		Position pos;
 		int l, col = 0;
@@ -205,7 +211,8 @@ public class ExcelReader implements ExcelAdapter {
 	 * @param string
 	 *            the string you want to convert
 	 * @return the converted string
-	 * @throws cellNameException if the given name is not of the type [A-Z]+
+	 * @throws cellNameException
+	 *             if the given name is not of the type [A-Z]+
 	 * @version 1.1
 	 * @author Valentin JABRE
 	 */

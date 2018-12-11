@@ -16,7 +16,7 @@ public class main {
 		 * 
 		 * String host = "smtp.univ-amu.fr";
 		 * 
-		 * String port = "587"; final String password = "Viridian123!"; final
+		 * String port = "587"; final String password = ""; final
 		 * String username = "j14003448"; // Get system properties Properties
 		 * properties = System.getProperties();
 		 * 
