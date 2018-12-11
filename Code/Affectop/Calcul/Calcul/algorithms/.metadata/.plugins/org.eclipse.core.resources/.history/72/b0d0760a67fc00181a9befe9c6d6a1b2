@@ -1,0 +1,41 @@
+package baseIO;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import calcul.Option;
+import calcul.Result;
+import calcul.Result.Affectation;
+
+public class BaseWriter extends BaseHandler{
+	Result r ;
+	
+	
+	
+	public BaseWriter(Result r) {
+		this.r = r;
+	}
+
+
+
+	public void writeResults(int year){
+		StringBuilder query = new StringBuilder();
+		query.append("INSERT INTO Results (optionId, numEtudiant)\n"); 
+		try {
+			for (Affectation aff : r.results) {
+				for(Option opt : aff.options)
+					query.append("(" +opt.id+" "+aff.s.numEtu+"),\n"); 
+			}
+			query.replace (query.length()-2,query.length()-1,";");
+			System.out.println(query.toString());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			
+		}
+}
+	
+	
+	
+}

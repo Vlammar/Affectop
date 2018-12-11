@@ -1,0 +1,191 @@
+package baseIO;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+import calcul.Option;
+import calcul.Student;
+
+/**
+ * This base reader can only be used with a mysql database
+ * 
+ */
+public class BaseReader extends BaseHandler{
+
+	Map<Integer,Option> options = new HashMap<Integer, Option>();
+	Map<Integer,Student> students = new HashMap<Integer, Student>();
+	Statement st;
+	
+	public ArrayList<ArrayList<Option>> getOptions(int year){
+		String query = "SELECT * FROM Options where year = "+year+" ;";
+
+		ResultSet rs = getResultOfQuery(query);		
+		ArrayList<ArrayList<Option>> result = new ArrayList<>();
+		
+		int nbDays = getNbDays(year);
+		for(int d = 0 ; d < nbDays ; d++) {
+			result.add(new ArrayList<>());
+		}
+		
+		try {
+			while (rs.next()) {
+				String intitule = rs.getString("intitule");
+				
+				int size = rs.getInt("size");
+				int optionGroup = rs.getInt("optionGroup");
+				int id = rs.getInt("id");
+				
+				Option o = new Option(size, intitule, optionGroup,id);
+				options.put(id,o);
+				result.get(optionGroup-1).add(o);
+				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
+			}
+			return result;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return result;
+		}
+	}
+	
+	public ArrayList<Student> getStudents(int year){
+		String query = "SELECT * FROM Students where year = "+year+" ;";
+		ResultSet rs = getResultOfQuery(query);
+		
+		ArrayList<Student> result = new ArrayList<>();
+		
+		int nbDays = getNbDays(year);
+		// iterate through the java resultset
+		try {
+			while (rs.next()) {
+				
+				String mail = rs.getString("mail");
+				Integer numEtu = rs.getInt("numEtudiant");
+				
+				ArrayList<LinkedList<Option>> preferences = getStudentPreference(nbDays, numEtu, year);
+				Student s =new Student(mail, preferences, nbDays,numEtu); 
+				students.put(numEtu,s);
+				result.add(s);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return result;
+		}
+		return result;
+	}
+	
+	public ArrayList<LinkedList<Option>> getStudentPreference(int nbDays, int studentID, int year){
+			ArrayList<LinkedList<Option>> result = new ArrayList<>();
+			String query = 
+				"SELECT * FROM Preferences where numEtudiant = '"+studentID+"' ORDER BY choice;" ;
+			ResultSet rs = getResultOfQuery(query);
+			ArrayList<Option> optionsAllDaysSortedByPreferences = new ArrayList<>();
+			try {
+				while (rs.next()) {
+					optionsAllDaysSortedByPreferences.add(options.get(rs.getInt("optionId")));
+				}
+				
+				for(int d = 0 ; d < nbDays ; d ++) {
+					LinkedList<Option> todayPreference = new LinkedList<>() ;
+					for (Option opt : optionsAllDaysSortedByPreferences) {
+						todayPreference.addLast(opt);
+					}
+					result.add(todayPreference);
+				}				
+				
+				return result;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				return result;
+			}
+	}
+		
+	public int getNbDays(int year) {
+		String query = 
+				"select MAX(optionGroup) from Options where year ="+year+";" ;
+		ResultSet rs = getResultOfQuery(query);
+		
+		try {
+			if(rs.next())
+				return  rs.getInt("MAX(optionGroup)");
+		}
+		catch(Exception e) {
+			System.out.println("ERROR");
+			e.printStackTrace();
+		}
+		return 1;
+	}
+	
+
+	public Map<Option,ArrayList<Option>> getIncompatibilities(){
+		Map<Option,ArrayList<Option>> incompatibilities = new HashMap<Option, ArrayList<Option>>();
+		
+		for(Option opt1 : options.values()) {
+			incompatibilities.put(opt1,new ArrayList<>());
+			for(Option opt2 : options.values()) {
+			if(opt1.intitule == opt2.intitule)
+				incompatibilities.get(opt1).add(opt2);
+			}
+		}
+		return incompatibilities;
+	}
+	
+	public Map<Student, LinkedList<Option>> getRepeater(int year) {
+		String query = "SELECT * FROM Repeaters WHERE optionId IN ("
+				+ "SELECT id FROM Options WHERE year ="+year+") ;";
+		ResultSet rs = getResultOfQuery(query);
+		
+		Map<Student, LinkedList<Option>> repeaters = new HashMap<Student, LinkedList<Option>>();
+		
+
+		// iterate through the java resultset
+		try {
+			while (rs.next()) {
+				
+				int opt = rs.getInt("optionId");
+				int numEtu = rs.getInt("numEtudiant");
+
+				if(!repeaters.containsKey(students.get(numEtu)))
+					repeaters.put(students.get(numEtu), new LinkedList<>());
+				System.out.println();
+				System.out.println(students.get(numEtu));
+				System.out.println(numEtu);
+				System.out.println(students);
+				System.out.println();
+				repeaters.get(students.get(numEtu)).add(options.get(opt));
+				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return repeaters;
+		}
+		return repeaters;
+	}
+	/*	ArrayList<Student> readStudents{}
+	ArrayList<Option> readOptions{}
+	Map<Option,ArrayList<Option>> readIncompatibilities{}
+	Map<Student,ArrayList<Option>> readRepeaters{}
+	*/
+
+	public static void main(String[] args) {
+		BaseReader br = new BaseReader();
+		int nbDays = br.getNbDays(2017);
+		ArrayList<Option> options = br.getOptions(2017);
+		System.out.println(br.getStudents(2017));
+		System.out.println(br.getRepeater(2017));
+		System.out.println(br.getIncompatibilities());
+
+		try {
+			br.st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

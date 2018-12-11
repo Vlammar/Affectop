@@ -1,0 +1,176 @@
+package baseIO;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Map;
+
+import calcul.Option;
+import calcul.Student;
+
+/**
+ * This base reader can only be used with a mysql database
+ * 
+ */
+public class BaseReader {
+
+	Map<Integer,Option> options;
+	Map<Integer,Student> students;
+	Statement st;
+	
+	public ResultSet getResultOfQuery(String query) {
+		/**
+		 * A Java MySQL SELECT statement example. Demonstrates the use of a SQL SELECT
+		 * statement against a MySQL database, called from a Java program.
+		 * 
+		 * Created by Alvin Alexander, http://alvinalexander.com
+		 */
+		try {
+			// create our mysql database connection
+			String myDriver = "com.mysql.jdbc.Driver";
+			
+			String myUrl = "jdbc:mysql://51.75.120.5/affectop_test";
+			System.out.println(myUrl);
+			Class.forName(myDriver);
+			Connection conn = DriverManager.getConnection(myUrl, "baseaccess", "affectop2018");
+			System.out.println(conn);
+			// our SQL SELECT query.
+			// if you only need a few columns, specify them by name instead of using "*"
+			
+
+			// create the java statement
+			st = conn.createStatement();
+
+			// execute the query, and get a java resultset
+			ResultSet rs = st.executeQuery(query);	
+			return rs;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	ArrayList<Option> getOptions(int year){
+		String query = "SELECT * FROM Options where year = "+year+" ;";
+
+		ResultSet rs = getResultOfQuery(query);		
+		ArrayList<Option> result = new ArrayList<>();
+
+		try {
+			while (rs.next()) {
+				String intitule = rs.getString("intitule");
+				
+				int size = rs.getInt("size");
+				int optionGroup = rs.getInt("optionGroup");
+				int id = rs.getInt("id");
+				
+				Option o = new Option(size, intitule, optionGroup);
+				options.put(id,o);
+				result.add(o);
+				
+				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
+			}
+			return result;
+		}
+		catch(Exception e) {
+			System.out.println(e.getStackTrace());
+			return result;
+		}
+	}
+	
+	ArrayList<Student> getStudents(int year){
+		String query = "SELECT * FROM Students where year = "+year+" ;";
+		ResultSet rs = getResultOfQuery(query);
+		
+		ArrayList<Student> result = new ArrayList<>();
+		
+		int nbDays = getNbDays(year);
+		// iterate through the java resultset
+		try {
+			while (rs.next()) {
+				
+				String mail = rs.getString("mail");
+				String numEtu = rs.getString("numEtudiant");
+				
+				ArrayList<LinkedList<Option>> preferences = getStudentPreference(nbDays, numEtu, year);
+				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
+				
+				result.add(new Student(mail, preferences, nbDays));
+			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getStackTrace());
+			return result;
+		}
+	
+		return result;
+	}
+	
+	ArrayList<LinkedList<Option>> getStudentPreference(int nbDays, String studentID, int year){
+			ArrayList<LinkedList<Option>> result = new ArrayList<>();
+			String query = 
+				"SELECT * FROM Preferences where numEtudiant = +'"+studentID+"'+ ORDER BY choice;" ;
+			ResultSet rs = getResultOfQuery(query);
+			ArrayList<Option> optionsAllDaysSortedByPreferences = new ArrayList<>();
+			try {
+				while (rs.next()) {
+					optionsAllDaysSortedByPreferences.add(options.get(rs.getInt("optionId")));
+				}
+				
+				for(int d = 0 ; d < nbDays ; d ++) {
+					LinkedList<Option> todayPreference = new LinkedList<>() ;
+					for (Option opt : optionsAllDaysSortedByPreferences) {
+						todayPreference.addLast(opt);
+					}
+					result.add(todayPreference);
+				}				
+				
+				return result;
+			}
+			catch(Exception e) {
+				System.out.println(e.getStackTrace());
+				return result;
+			}
+
+
+	}
+	
+	
+	int getNbDays(int year) {
+		String query = 
+				"select MAX(optionGroup) from Options where year ="+year+";" ;
+			ResultSet rs = getResultOfQuery(query);
+			
+			try {
+				if(rs.next())
+					return  rs.getInt("MAX(optionGroup)");
+			}
+			catch(Exception e) {
+				System.out.println("ERROR");
+				e.printStackTrace();
+			}
+		return 1;
+	}
+
+		
+		
+	/*	ArrayList<Student> readStudents{}
+	ArrayList<Option> readOptions{}
+	Map<Option,ArrayList<Option>> readIncompatibilities{}
+	Map<Student,ArrayList<Option>> readRepeaters{}
+	*/
+	
+	public static void main(String[] args) {
+		BaseReader br = new BaseReader();
+		System.out.println(br.getNbDays(2017));
+		System.out.println(br.getOptions(2017));
+		try {
+			br.st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+}
