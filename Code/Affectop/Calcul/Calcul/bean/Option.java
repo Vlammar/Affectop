@@ -1,34 +1,33 @@
-package Calcul.bean;
+package calcul;
 
 import java.util.LinkedList;
 
 /**
- * Bean
- * 
- * @author Mathieu Vallet
- * @version 2.0
+ * La classe correspondant à une option
  */
 public class Option {
-	//la taille de l'option
+	/**la taille de l'option*/
 	public int size;
-	//la liste des étudiants
+	/**la liste des étudiants*/
 	public LinkedList<Student> accepted;
-	//le nom de l'option
+	/**le nom de l'options*/
 	public String intitule;
-	//le groupe d'options auquel il appartient (le jour)
-	public int group;
+	/**le groupe d'options auquel il appartient (le jour)*/
+	public int day;
 	
-	/** Constructeur d'option
+	public int id;
+	/** Constructeur d'options
 	 * @param size la taille de l'option
 	 * @param intitule le nom de l'option 
 	 * @param day l'ensemble d'options auquel il appartient (le jour)
-	 * 
+	 * @return une option
 	 */
-	public Option(int size, String intitule,int day){
+	public Option(int size, String intitule,int day, int id){
 		accepted = new LinkedList<Student>();
 		this.size = size;
 		this.intitule = intitule;
-		this.group = day;
+		this.day = day;
+		this.id = id;
 	}
 	
 	/**
@@ -39,6 +38,6 @@ public class Option {
 	}
 	
 	public String toString() {
-		return "("+intitule+","+group+","+size+")";
+		return "("+intitule+","+day+","+size+")";
 	}
 }
