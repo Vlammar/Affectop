@@ -205,7 +205,6 @@ public class BaseReader extends BaseHandler{
 		ResultSet rs = getResultOfQuery(query);
 		
 		Map<Student, ArrayList<Option>> repeaters = new HashMap<Student, ArrayList<Option>>();
-		
 
 		// iterate through the java resultset
 		try {
@@ -232,7 +231,22 @@ public class BaseReader extends BaseHandler{
 		return repeaters;
 	}
 	
-
+	boolean isTeacher(String token, int year) {
+		String query =  "SELECT COUNT(*) from Teachers WHERE token = '"+ token +"' AND year ="+year;
+		ResultSet rs = getResultOfQuery(query);
+		try {
+			if(rs.next()) {
+				if(rs.getInt("COUNT(*)")>0)
+					return true;
+				
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 	public static void main(String[] args) {
 		BaseReader br = new BaseReader();
 		int nbDays = br.getNbDays(2017);
@@ -265,5 +279,8 @@ public class BaseReader extends BaseHandler{
 		System.out.println(aff.affectTop(nbDays,1));
 		
 		System.out.println(new calcul.Result(students).results);
+		System.out.println(br.isTeacher("_f_s_-é",2017));
+		System.out.println(br.isTeacher("_f_s_-é",2016));
+		System.out.println(br.isTeacher("blah",2017));
 	}
 }
