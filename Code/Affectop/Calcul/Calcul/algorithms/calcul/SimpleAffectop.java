@@ -43,10 +43,10 @@ import java.util.Stack;
 
 		void replace(Student newStudent , Student replaced, Option o) {
 			replaced.affected[day] = null;
-			o.accepted.remove(replaced);
+			o.getAccepted().remove(replaced);
 			
 			newStudent.affected[day] = o;
-			o.accepted.add(newStudent);
+			o.getAccepted().add(newStudent);
 		}
 
 		public void mariagesStable(){
@@ -60,7 +60,7 @@ import java.util.Stack;
 				for(Option w : available.get(m)) {
 				
 					if(!w.isFull()) {
-						w.accepted.add(m);
+						w.getAccepted().add(m);
 						m.affected[day]= w;
 						break;
 					}

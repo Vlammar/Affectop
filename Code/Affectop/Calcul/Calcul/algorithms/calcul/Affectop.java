@@ -53,7 +53,7 @@ public class Affectop {
 			if(todayRank<0) continue;
 			if(s.affected[todayRank] == null)continue;
 			if(todayRank > leastFavoriteDay || todayRank == leastFavoriteDay
-					&& s.affected[leastFavoriteDay].accepted.size() > s.affected[todayRank].accepted.size()) {
+					&& s.affected[leastFavoriteDay].getAccepted().size() > s.affected[todayRank].getAccepted().size()) {
 				leastFavoriteDay = d;
 			}
 		

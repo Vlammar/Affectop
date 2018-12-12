@@ -24,7 +24,7 @@ public class Reaffector {
 	private Option getMostEmpty(ArrayList<Option> options) {
 		Option min = options.get(0);
 		for (Option o : options) {
-			min = (o.accepted.size() < min.accepted.size()) ? o : min;
+			min = (o.getAccepted().size() < min.getAccepted().size()) ? o : min;
 		}
 		return min;
 	}
@@ -36,8 +36,8 @@ public class Reaffector {
 	 */
 	private void affect(Option opt, Student s) {
 		assert(!opt.isFull());
-		opt.accepted.add(s);
-		s.affected[opt.day] = opt;
+		opt.getAccepted().add(s);
+		s.affected[opt.getDay()] = opt;
 	}
 	
 	/**

@@ -35,7 +35,7 @@ public class Result implements Comparable<Result>{
 		int satisfaction = 0;
 		for(Affectation a : results) {
 			for(Option opt  : a.s.affected) {
-				int sat = (a.s.preferences.get(opt.day).size() - a.s.preferences.get(opt.day).indexOf(opt))/a.s.preferences.get(opt.day).indexOf(opt);
+				int sat = (a.s.preferences.get(opt.getDay()).size() - a.s.preferences.get(opt.getDay()).indexOf(opt))/a.s.preferences.get(opt.getDay()).indexOf(opt);
 				satisfaction += sat*sat;
 			}
 		}
