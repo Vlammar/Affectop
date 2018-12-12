@@ -1,13 +1,10 @@
-package Calcul.algorithms.calcul;
+package calcul;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
-import Calcul.bean.Option;
-import Calcul.bean.Student;
 
 /**
  * La classe chargée de faire l'affectation 
@@ -17,49 +14,49 @@ public class Affectop {
 	int nbDays;
 	ArrayList<Student> students;
 	ArrayList<ArrayList<Option>> options;
+	Map<Student, ArrayList<Option>> repeaters;
+	ArrayList<Student> scatterbrainStudents;
+	Map<Option, ArrayList<Option>> incompatibilities;
 
+	
+	
 	/**
-	 * Constructeur de la classe
-	 * @param students les étudiants à affecter
-	 * @param options  les options par ensembles
-	 * @param nbDays   le nombre d'ensembles d'options
-	 * @return le resultat du constructeur
+	 * 
+	 * @param nbDays le nombre de groupes d'options
+	 * @param students les etudiants ayant entre leurs voeux
+	 * @param options  les options disponibles
+	 * @param repeaters les redoublents
+	 * @param scatterbrainStudents les etudiants ayant oublie d'entrer leurs voeux
+	 * @param incompatibilities les incompatibilites entre options
 	 */
-	public Affectop(ArrayList<Student> students,ArrayList<ArrayList<Option>> options ,int nbDays) {
+	public Affectop(int nbDays, ArrayList<Student> students, ArrayList<ArrayList<Option>> options,
+			Map<Student, ArrayList<Option>> repeaters, ArrayList<Student> scatterbrainStudents,
+			Map<Option, ArrayList<Option>> incompatibilities) {
+		this.nbDays = nbDays;
 		this.students = students;
 		this.options = options;
-		this.nbDays = nbDays;
+		this.repeaters = repeaters;
+		this.scatterbrainStudents = scatterbrainStudents;
+		this.incompatibilities = incompatibilities;
 	}
 
-	/**
-	 * @param availableOptions la map des options disponibles des étudiants
-	 * @param incompatibilities la liste des incompatibilités en 
-	 * @param redoublements les options qu'un étudiant redouble
-	 */
-	public void handleRepeaterIncompabilities(HashMap<Student, LinkedList<Option>> availableOptions, HashMap<Option, LinkedList<Option>> incompatibilities, Map<Student,ArrayList<Option>> redoublements){
-		for(Student s : redoublements.keySet()) {
-			for(Option opt : redoublements.get(s)) {
-				availableOptions.get(s).removeAll(incompatibilities.get(opt));
-				availableOptions.get(s).remove(opt);
-			}
-		}
-	}
-	
-	
 	/**
 	 * @param 	s l'etudiant dont on va retirer l'option a laquelle il a été affecté qu'il aime le moins
 	 * @return	l'option retiree
 	 */
-	Option removeOptionLeastPrefered(Student s) {
+	private Option removeOptionLeastPrefered(Student s) {
 		int leastFavoriteDay=0;
 		int todayRank;
 		Option removed;
 		for(int d = 0 ; d < s.affected.length ; d++) {
 			todayRank = s.preferences.get(d).indexOf(s.affected[d]);
+			if(todayRank<0) continue;
+			if(s.affected[todayRank] == null)continue;
 			if(todayRank > leastFavoriteDay || todayRank == leastFavoriteDay
 					&& s.affected[leastFavoriteDay].accepted.size() > s.affected[todayRank].accepted.size()) {
 				leastFavoriteDay = d;
 			}
+		
 		}
 		removed = s.affected[leastFavoriteDay];
 		s.affected[leastFavoriteDay] = null;
@@ -68,11 +65,10 @@ public class Affectop {
 	}
 	
 	/**
-	 * @param availableOptions le dictionnaire des options disponibles
 	 * @param incompatibilities le dictionnaire des incompatibilites
 	 * @param redoublements le dictionnaire des redoublements
 	 */
-	public void handleRepeaterAffectation(HashMap<Student, LinkedList<Option>> availableOptions, HashMap<Option, LinkedList<Option>> incompatibilities, Map<Student,ArrayList<Option>> redoublements){
+	private void handleRepeaterAffectation(Map<Option, ArrayList<Option>> incompatibilities, Map<Student,ArrayList<Option>> redoublements){
 		ArrayList<Option> optionsNotFull = new ArrayList<>();
 		for(Student s : redoublements.keySet()) {
 			for(int optionRedoublee = 0 ; optionRedoublee < redoublements.get(s).size();optionRedoublee++)
@@ -86,7 +82,7 @@ public class Affectop {
 	 * @param d l'index de l'ensemble (le jour) dans lequel sont choisis les options
 	 * @param available le dictionnaire des options disponibles  (clé : un(e) etudiant(e), valeur : toutes les options qui lui sont disponibles)
 	 */
-	private void affectOneDay(HashMap<Option, LinkedList<Option>> incompatibilities, int d) {
+	private void affectOneDay(Map<Option, ArrayList<Option>> incompatibilities, int d) {
 		HashMap<Student, LinkedList<Option>> availableOption = new HashMap<>();
 		for(Student s : students) {
 			LinkedList<Option> optToday = new LinkedList<Option>(s.preferences.get(d));
@@ -120,8 +116,8 @@ public class Affectop {
 	 * @param incompatibilities le dictionnaire des incompatibilités entre options (clé : une option, valeur : toutes les options qui lui sont incompatibles)
 	 * @return la satisfaction de l'affectation
 	 */
-	public int affectStable(HashMap<Option, LinkedList<Option>> incompatibilities) {		
-		LinkedList<Integer> days = new LinkedList<>();
+	public int affectStable(Map<Option, ArrayList<Option>> incompatibilities) {		
+		ArrayList<Integer> days = new ArrayList<>();
 		for(int d = 0 ; d < nbDays; d ++) {
 			days.add(d);
 			Collections.shuffle(days);
@@ -131,22 +127,42 @@ public class Affectop {
 	}
 	
 	/**
-	 * Launch several times the algorithm to get the best result
+	 * Retourne les options disponibles d'un etudiant 	
+	 * @param s l'etudiant
+	 * @return les options disponibles de l'etudaint en argument
+	 */
+	ArrayList<ArrayList<Option>> getAvailableOptions(Student s){
+		ArrayList<ArrayList<Option>> result = new ArrayList<>();
+		for(int d = 0 ; d < s.affected.length ; d ++) {
+			ArrayList<Option> todaysOption = new ArrayList<Option>(s.preferences.get(d));
+			for(int d_affected = 0 ; d_affected < s.affected.length ; d_affected ++) {
+				if(s.affected[d_affected] != null)
+					todaysOption.removeAll(incompatibilities.get(s.affected[d_affected]));
+			}
+			result.add(todaysOption);
+		}
+		return result;
+	}
+	
+	/**
+	 * Launch the algorithm, then handle the repeaters and the scatterbrains
 	 * @param students the students
 	 * @param options the options
-	 * @param incompatibilities the incompatibilities beteween options
+	 * @param incompatibilities the incompatibilities between options
+	 * @param repeaters the dictionary of the options that students repeated  
+	 * @param scatterbrainStudents students that did not specified their preference
 	 * @param nbDays the number of group of options
 	 * @param nbLaunch the number of times you launch the algorithm to get the best affect
+	 * 
 	 * @return the best affect
 	 */
-	public static HashMap<Student,Option[]> affectTop(ArrayList<Student> students, ArrayList<ArrayList<Option>> options, HashMap<Option, LinkedList<Option>> incompatibilities, int nbDays, int nbLaunch) {
-		Affectop aff;
+	public Map<Student,Option[]> affectTop(int nbDays,
+											   int nbLaunch) {
 		long bestScore = 0;
-		HashMap<Student,Option[]> affect = new HashMap<>();  
+		Map<Student,Option[]> affect = new HashMap<>();  
 		for(int i = 0 ; i < nbLaunch ;i++) {
-			aff = new Affectop(students, options, nbDays);
-			long affectScore = aff.affectStable(incompatibilities);
-			
+			long affectScore = affectStable(incompatibilities);
+					
 			System.out.println(affectScore+"/"+bestScore);
 
 			if(bestScore < affectScore) {
@@ -155,10 +171,28 @@ public class Affectop {
 				for(Student s : students) {
 					Option[] sOptions = s.affected.clone();
 					affect.put(s,sOptions);
-				}
-				
+				}				
 			}
 		}
+
+		Map<Student, ArrayList<ArrayList<Option>>> available = new HashMap<>();
+		for(Student s : students) {
+			available.put(s,getAvailableOptions(s));
+		}
+		
+		
+				
+		handleRepeaterAffectation(incompatibilities,repeaters);
+				
+		Reaffector reaff = new Reaffector(scatterbrainStudents, options, nbDays);
+		reaff.affect();
+		affect.clear();
+
+		for(Student s : students) {
+			Option[] sOptions = s.affected.clone();
+			affect.put(s,sOptions);
+		}
+
 		return affect;
 	}
 }

@@ -1,20 +1,21 @@
-package Calcul.algorithms.calcul;
+package calcul;
 
 import java.util.ArrayList;
-import Calcul.bean.Option;
-import Calcul.bean.Student;
 
 public class Result implements Comparable<Result>{
+	/**
+	 * la classe definissant une affectation d'un etudiant a une option.
+	 */
 	public class Affectation {
-		Student s;
-		ArrayList<Option> options;
+		public Student s;
+		public ArrayList<Option> options;
 		public Affectation(Student s, ArrayList<Option> options) {
 			this.s =s;
 			this.options = options;
 		}
 	}
-	
-	ArrayList<Affectation> results;
+	/**toutes les affectations donnees par l'algorithme.*/
+	public ArrayList<Affectation> results;
 	public Result(ArrayList<Student> students) {
 		results = new ArrayList<>();
 		for(Student s : students) {
@@ -25,16 +26,22 @@ public class Result implements Comparable<Result>{
 		}
 	}
 	
-	
-	int satisfaction() {
+	/**
+	 * Retourne la satisfaction globale
+	 * (somme pour tout etudiant e)(somme pour tout jours j) (index de preference de l'option affectee a e au jour j / nombre d'option disponibles)^2  
+	 * @return la satisfaction
+	 */
+	public int satisfaction() {
 		int satisfaction = 0;
 		for(Affectation a : results) {
-			for(Option opt  : a.s.affected)
-				satisfaction += a.s.preferences.get(opt.group).size() - a.s.preferences.get(opt.group).indexOf(opt);
-			satisfaction -= (a.options.size() - a.s.preferences.size()) * 10;
+			for(Option opt  : a.s.affected) {
+				int sat = (a.s.preferences.get(opt.day).size() - a.s.preferences.get(opt.day).indexOf(opt))/a.s.preferences.get(opt.day).indexOf(opt);
+				satisfaction += sat*sat;
+			}
 		}
 		return satisfaction;
 	}
+	
 	@Override
 	public int compareTo(Result r) {
 		return this.satisfaction()-r.satisfaction();

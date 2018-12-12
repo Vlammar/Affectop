@@ -1,6 +1,4 @@
-package Calcul.algorithms.calcul;
-import Calcul.bean.Option;
-import Calcul.bean.Student;
+package calcul;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
