@@ -163,7 +163,7 @@ public class BaseReader extends BaseHandler{
 					LinkedList<Option> todayPreference = new LinkedList<>() ;
 					for (Option opt : optionsAllDaysSortedByPreferences) {
 						System.out.println(opt);
-						if(opt.day == d)
+						if(opt.getDay() == d)
 							todayPreference.addLast(opt);
 					}
 					result.add(todayPreference);
@@ -210,7 +210,7 @@ public class BaseReader extends BaseHandler{
 		for(Option opt1 : options.values()) {
 			incompatibilities.put(opt1,new ArrayList<>());
 			for(Option opt2 : options.values()) {
-			if(opt1.intitule == opt2.intitule)
+			if(opt1.getIntitule() == opt2.getIntitule())
 				incompatibilities.get(opt1).add(opt2);
 			}
 		}

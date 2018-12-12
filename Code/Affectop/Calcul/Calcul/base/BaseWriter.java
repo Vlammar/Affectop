@@ -23,7 +23,7 @@ public class BaseWriter extends BaseHandler{
 		try {
 			for (Affectation aff : r.results) {
 				for(Option opt : aff.options)
-					query.append("(" +opt.id+" "+aff.s.numEtu+"),\n"); 
+					query.append("(" +opt.getId()+" "+aff.s.numEtu+"),\n"); 
 			}
 			query.replace (query.length()-2,query.length()-1,";");
 			System.out.println(query.toString());
@@ -74,7 +74,7 @@ public class BaseWriter extends BaseHandler{
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Preferences (choice,optionId,numEtudiant) \nVALUES\n");
 		for(Option opt : preferences) {
-			query.append("("+index+","+opt.id+","+numEtudiant+"),");
+			query.append("("+index+","+opt.getId()+","+numEtudiant+"),");
 			index ++;
 		}
 		query.replace(query.length()-1, query.length(), ";");
@@ -98,7 +98,7 @@ public class BaseWriter extends BaseHandler{
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Options (intitule,description,size,optionGroup,year) \nVALUES\n");
 		for(Option opt : options) {
-			query.append("('"+opt.intitule+"','"+opt.description+"',"+opt.size+","+opt.day+","+year+"),");
+			query.append("('"+opt.getIntitule()+"','"+opt.getDescription()+"',"+opt.getSize()+","+opt.getDay()+","+year+"),");
 		}
 		query.replace(query.length()-1, query.length(), ";");
 		
@@ -156,7 +156,7 @@ public class BaseWriter extends BaseHandler{
 		
 		for(Student s : repeaters.keySet()) {
 			for(Option opt : repeaters.get(s))
-				query.append("("+s.numEtu+","+opt.id+","+year+"),");
+				query.append("("+s.numEtu+","+opt.getId()+","+year+"),");
 		}
 		query.replace(query.length()-1, query.length(), ";");
 		try {
