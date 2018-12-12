@@ -1,8 +1,5 @@
 package baseIO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,42 +9,14 @@ import calcul.Result;
 import calcul.Result.Affectation;
 import calcul.Student;
 
-public class BaseWriter extends BaseHandler{
-	Statement st ;
+public class BaseWriter extends BaseHandler{	
 	
-	public void initConnection() {
-		/**
-		 * A Java MySQL SELECT statement example. Demonstrates the use of a SQL SELECT
-		 * statement against a MySQL database, called from a Java program.
-		 * 
-		 * Created by Alvin Alexander, http://alvinalexander.com
-		 */
-		try {
-			// create our mysql database connection
-			String myDriver = "com.mysql.jdbc.Driver";
-			
-			String myUrl = "jdbc:mysql://51.75.120.5/affectop_test";
-			
-			Class.forName(myDriver);
-			Connection conn = DriverManager.getConnection(myUrl, "baseaccess", "affectop2018");
-			
-			st = conn.createStatement();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	public void endConnection() {
-		try {
-		st.close();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+	/**
+	 * Ecrit le resultat de l'algorithme d'affectation dans la base de donnee (ici BD MySQL)
+	 * 
+	 * @param year l'annee
+	 * @param r le resultat de l'algorithme d'affectation 
+	 */
 	public void writeResults(int year,Result r ){
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Results (optionId, numEtudiant)\n"); 
@@ -64,6 +33,17 @@ public class BaseWriter extends BaseHandler{
 		}
 	}	
 
+	/**
+	 * Ajoute un etudiant a la base de donnee (ici BD MySQL)
+	 * 
+	 * @param year l'annee courante
+	 * @param lastName le prenom de l'etudiant
+	 * @param firstName le nom de l'etudiant
+	 * @param numEtu le numero etudiant
+	 * @param mail le mail de l'etudiant
+	 * @param token le token de l'etudiant
+	 * @param step l'etape
+	 */
 	public void writeStudent(int year,
 							String lastName,
 							String firstName,
@@ -83,6 +63,12 @@ public class BaseWriter extends BaseHandler{
 		}
 	}
 	
+	
+	/**
+	 * Ecrit dans la base de donee les preferences de l'etudiant
+	 * @param numEtudiant le numero de l'etudiant
+	 * @param preferences les preferences de l'etudiant
+	 */
 	public void writePreference(int numEtudiant, ArrayList<Option> preferences) {
 		int index = 1;
 		StringBuilder query = new StringBuilder();
@@ -103,7 +89,11 @@ public class BaseWriter extends BaseHandler{
 		
 	}
 
-	
+	/**
+	 * Ecrit dans la base de donee les options
+	 * @param options les options 
+	 * @param year l'annee
+	 */
 	public void writeOptions(ArrayList<Option> options, int year) {
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Options (intitule,description,size,optionGroup,year) \nVALUES\n");
@@ -121,7 +111,28 @@ public class BaseWriter extends BaseHandler{
 		}
 		
 	}
+
+	/**
+	 * Retire des etudiants de la base l'etudiant dont le numero est passe en argument
+	 * @param numEtudiant le numEtudiant
+	 */
+	public void deleteOption(int id) {
+		String query = "DELETE FROM Options WHERE id ="+id+";";
+				
+		try {
+			System.out.println(query);
+			st.executeUpdate(query);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
+	/**
+	 * Retire des etudiants de la base l'etudiant dont le numero est passe en argument
+	 * @param numEtudiant le numEtudiant
+	 */
 	public void deleteStudent(String numEtudiant) {
 		String query = "DELETE FROM Students WHERE numEtudiant ="+numEtudiant+";";
 				
@@ -134,6 +145,11 @@ public class BaseWriter extends BaseHandler{
 		}
 	}
 	
+	/**
+	 * Ecrit dans la BD les redoublants
+	 * @param repeaters
+	 * @param year
+	 */
 	public void writeRepeaters(Map<Student,ArrayList<Option>> repeaters, int year) {
 		StringBuilder query = new StringBuilder();
 		query.append("INSERT INTO Repeaters (numEtudiant,optionId,year)\nVALUES\n");
@@ -154,7 +170,7 @@ public class BaseWriter extends BaseHandler{
 	
 	public static void main(String[] args) {
 		BaseWriter b = new BaseWriter();
-		b.initConnection();
+		b.initConnection();;
 		
 		//STUDENTS
 		//b.writeStudent(1,"Jesus","Christ","1","JEEZ_eden.com","aaaaaaaaaaaaaaaa","1");

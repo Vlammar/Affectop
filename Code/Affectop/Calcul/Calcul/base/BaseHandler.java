@@ -2,18 +2,19 @@ package baseIO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class BaseHandler {
 	Statement st;
-	ResultSet getResultOfQuery(String query) {
-		/**
-		 * A Java MySQL SELECT statement example. Demonstrates the use of a SQL SELECT
-		 * statement against a MySQL database, called from a Java program.
-		 * 
-		 * Created by Alvin Alexander, http://alvinalexander.com
-		 */
+	
+	/**
+	 * Cree une connection avec la base MySQL et effectue la requete
+	 * inspire par http://alvinalexander.com
+	 * @param query la requete a effectuer
+	 * @return le ResultSet contenant le resultat de la requete
+	 */
+	void initConnection() {
+		
 		try {
 			// create our mysql database connection
 			String myDriver = "com.mysql.jdbc.Driver";
@@ -25,12 +26,19 @@ public class BaseHandler {
 			
 			st = conn.createStatement();
 
-			ResultSet rs = st.executeQuery(query);	
-			return rs;
 		}catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 
+	public void endConnection() {
+		try {
+		st.close();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 }

@@ -20,33 +20,23 @@ public class BaseReader extends BaseHandler{
 	Map<Integer,Student> students = new HashMap<Integer, Student>();
 	Statement st;
 	
-	
-	
-	ResultSet getResultOfQuery(String query) {
-		/**
-		 * A Java MySQL SELECT statement example. Demonstrates the use of a SQL SELECT
-		 * statement against a MySQL database, called from a Java program.
-		 * 
-		 * Created by Alvin Alexander, http://alvinalexander.com
-		 */
-		try {
-			// create our mysql database connection
-			String myDriver = "com.mysql.jdbc.Driver";
-			
-			String myUrl = "jdbc:mysql://51.75.120.5/affectop_test";
-			
-			Class.forName(myDriver);
-			Connection conn = DriverManager.getConnection(myUrl, "baseaccess", "affectop2018");
-			
-			st = conn.createStatement();
 
-			ResultSet rs = st.executeQuery(query);	
-			return rs;
-		}catch (Exception e) {
-			e.printStackTrace();
-			return null;
+	ResultSet getResultOfQuery(String query) {
+		try {
+			return st.executeQuery(query);
 		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
+	
+	
+	/**
+	 * Créé et retourne les options présentes dans la BD MySQL (classées par jours)
+	 * @param year l'annee de l'affectation
+	 * @return la liste de liste d'options
+	 */
 	public ArrayList<ArrayList<Option>> getOptionsPerDays(int year){
 		String query = "SELECT * FROM Options where year = "+year+" ;";
 
@@ -80,6 +70,13 @@ public class BaseReader extends BaseHandler{
 	}
 	
 	
+	/**
+	 * 
+	 * Créé, remplit les preferences et retourne les étudiants présents dans la BD MySQL 
+	 * 
+	 * @param year l'annee de l'affectation
+	 * @return la liste d'etudiants
+	 */
 	public ArrayList<Student> getStudents(int year){
 		String query = "SELECT * FROM Students where year = "+year+" ;";
 		ResultSet rs = getResultOfQuery(query);
@@ -109,6 +106,11 @@ public class BaseReader extends BaseHandler{
 		return result;
 	}
 	
+	/**
+	 * Créé et retourne les options présentes dans la BD MySQL 
+	 * @param year l'annee de l'affectation
+	 * @return la liste de liste d'options
+	 */
 	
 	public ArrayList<Option> getOptions(int year){
 		String query = "SELECT * FROM Options where year = "+year+" ;";
@@ -139,7 +141,13 @@ public class BaseReader extends BaseHandler{
 		}
 	}
 
-	
+	/**
+	 * Créé et retourne les preferences des etudiants présents dans la BD MySQL (classées par jours)
+	 * @param nbDays le nombre de groupes d'option
+	 * @param studentID le numero etudiant de l'etudiant
+	 * @param year l'annee de l'affectation
+	 * @return la liste de liste d'options
+	 */
 	public ArrayList<LinkedList<Option>> getStudentPreference(int nbDays, int studentID, int year){
 			ArrayList<LinkedList<Option>> result = new ArrayList<>();
 			String query = 
@@ -169,6 +177,12 @@ public class BaseReader extends BaseHandler{
 			}
 	}
 		
+	
+	/**
+	 * Retourne le nombre de groupe d'option  dans la BD MySQL
+	 * @param year l'annee de l'affectation
+	 * @return le nombre de groupes d'option
+	 */
 	public int getNbDays(int year) {
 		String query = 
 				"select MAX(optionGroup) from Options where year ="+year+";" ;
@@ -185,7 +199,11 @@ public class BaseReader extends BaseHandler{
 		return 1;
 	}
 	
-
+	/**
+	 * Créé et retourne le dictionnaire des incompatibilites entre options présent dans la BD MySQL
+	 * (pour le moment : juste le dictionnaire d'options avec le meme intitule)
+	 * @return le dictionnaire des incompatibilites entre options
+	 */
 	public Map<Option,ArrayList<Option>> getIncompatibilities(){
 		Map<Option,ArrayList<Option>> incompatibilities = new HashMap<Option, ArrayList<Option>>();
 		
@@ -198,7 +216,12 @@ public class BaseReader extends BaseHandler{
 		}
 		return incompatibilities;
 	}
-	
+
+	/**
+	 * Créé et retourne le dictionnaire qui a pour cle les etudiants et pour valeur  la list des options redoublees entre options présent dans la BD MySQL
+	 * (pour le moment : juste meme intitule)
+	 * @return le dictionnaire <K:etudiant,V:liste de ses redoublements>
+	 */
 	public Map<Student, ArrayList<Option>> getRepeater(int year) {
 		String query = "SELECT * FROM Repeaters WHERE optionId IN ("
 				+ "SELECT id FROM Options WHERE year ="+year+") ;";
@@ -231,6 +254,11 @@ public class BaseReader extends BaseHandler{
 		return repeaters;
 	}
 	
+	/** Retourne si le token passe en argument est celui du professeur. 
+	 * @param token le token
+	 * @param year	l'annee choisie
+	 * @return un booleen vrai si le token est celui du professeur et faux sinon.
+	 */
 	boolean isTeacher(String token, int year) {
 		String query =  "SELECT COUNT(*) from Teachers WHERE token = '"+ token +"' AND year ="+year;
 		ResultSet rs = getResultOfQuery(query);
