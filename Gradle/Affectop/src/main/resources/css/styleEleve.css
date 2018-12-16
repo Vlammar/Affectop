@@ -1,0 +1,72 @@
+@charset "UTF-8";
+.bouton a {
+    background-color: #0080ff; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 10px 10px 10px 10px;
+    float: right;
+}
+
+.bouton a:hover {
+    background-color: #004080;
+}
+
+.bouton_retour a {
+    background-color: #000000;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 10px 10px 10px 10px;
+    float: left;
+}
+
+.bouton_retour a:hover {
+    background-color: #000040; 
+}
+
+p {
+    font-family:times,serif;
+}
+.option {
+	font-size: 20px;	
+	font-weight: bold; 
+}
+
+.id{
+	padding: 10px 50px;
+	color: white;
+	background-color: #008080;
+}
+
+section {
+	text-align: center;
+	padding: 10px 50px;
+}
+
+table {
+border: medium solid #0080ff;
+border-collapse: collapse;
+width: 50%;
+white-space: nowrap;
+}
+th {
+border: thin solid #0080ff;
+width: 50%;
+padding: 5px;
+}
+td {
+font-family: sans-serif;
+border: thin solid #0080ff;
+width: 50%;
+padding: 5px;
+text-align: center;
+}
