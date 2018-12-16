@@ -13,8 +13,7 @@ public class BaseHandler {
 	 * @param query la requete a effectuer
 	 * @return le ResultSet contenant le resultat de la requete
 	 */
-	void initConnection() {
-		
+	public void initConnection() {
 		try {
 			// create our mysql database connection
 			String myDriver = "com.mysql.jdbc.Driver";
@@ -26,6 +25,7 @@ public class BaseHandler {
 			
 			st = conn.createStatement();
 
+
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -33,7 +33,7 @@ public class BaseHandler {
 
 	public void endConnection() {
 		try {
-		st.close();
+			st.close();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

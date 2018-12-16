@@ -18,14 +18,13 @@ public class BaseReader extends BaseHandler{
 
 	Map<Integer,Option> options = new HashMap<Integer, Option>();
 	Map<Integer,Student> students = new HashMap<Integer, Student>();
-	Statement st;
 	
-
 	ResultSet getResultOfQuery(String query) {
 		try {
 			return st.executeQuery(query);
 		}
 		catch(Exception e){
+			System.out.println("EXEC ERROR");
 			e.printStackTrace();
 		}
 		return null;
@@ -39,11 +38,12 @@ public class BaseReader extends BaseHandler{
 	 */
 	public ArrayList<ArrayList<Option>> getOptionsPerDays(int year){
 		String query = "SELECT * FROM Options where year = "+year+" ;";
-
-		ResultSet rs = getResultOfQuery(query);		
+		int nbDays = getNbDays(year);
+		
+		ResultSet rs = getResultOfQuery(query);
+		
 		ArrayList<ArrayList<Option>> result = new ArrayList<>();
 		
-		int nbDays = getNbDays(year);
 		for(int d = 0 ; d < nbDays ; d++) {
 			result.add(new ArrayList<>());
 		}
@@ -59,11 +59,11 @@ public class BaseReader extends BaseHandler{
 				Option o = new Option(size, intitule, optionGroup,id);
 				options.put(id,o);
 				result.get(optionGroup-1).add(o);
-				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
 			}
 			return result;
 		}
 		catch(Exception e) {
+			System.out.println("ERREUR OPTIONS");
 			e.printStackTrace();
 			return result;
 		}
@@ -79,24 +79,30 @@ public class BaseReader extends BaseHandler{
 	 */
 	public ArrayList<Student> getStudents(int year){
 		String query = "SELECT * FROM Students where year = "+year+" ;";
+		int nbDays = getNbDays(year);
+		
+		
 		ResultSet rs = getResultOfQuery(query);
+		
 		
 		ArrayList<Student> result = new ArrayList<>();
 		
-		int nbDays = getNbDays(year);
 		// iterate through the java resultset
 		try {
 			while (rs.next()) {
-				
 				String mail = rs.getString("mail");
 				Integer numEtu = rs.getInt("numEtudiant");
 				
-				System.out.println(nbDays+" "+ numEtu+" "+ year);
-				
-				ArrayList<LinkedList<Option>> preferences = getStudentPreference(nbDays, numEtu, year);
-				Student s =new Student(mail, preferences, nbDays,numEtu); 
+				Student s =new Student(mail, null, nbDays,numEtu); 
 				students.put(numEtu,s);
 				result.add(s);
+				
+			}
+			
+			
+			for(Student s : students.values()){
+				ArrayList<LinkedList<Option>> preferences = getStudentPreference(nbDays, s.numEtu, year);
+				s.preferences = preferences;
 			}
 		}
 		catch(Exception e) {
@@ -158,12 +164,10 @@ public class BaseReader extends BaseHandler{
 				while (rs.next()) {
 					optionsAllDaysSortedByPreferences.add(options.get(rs.getInt("optionId")));
 				}
-				//System.out.println(optionsAllDaysSortedByPreferences);
 				for(int d = 1 ; d <= nbDays ; d ++) {
 					LinkedList<Option> todayPreference = new LinkedList<>() ;
 					for (Option opt : optionsAllDaysSortedByPreferences) {
-						System.out.println(opt);
-						if(opt.getDay() == d)
+						if(opt != null && opt.getDay() == d)
 							todayPreference.addLast(opt);
 					}
 					result.add(todayPreference);
@@ -175,8 +179,7 @@ public class BaseReader extends BaseHandler{
 				e.printStackTrace();
 				return result;
 			}
-	}
-		
+	}	
 	
 	/**
 	 * Retourne le nombre de groupe d'option  dans la BD MySQL
@@ -193,7 +196,7 @@ public class BaseReader extends BaseHandler{
 				return  rs.getInt("MAX(optionGroup)");
 		}
 		catch(Exception e) {
-			System.out.println("ERROR");
+			System.out.println("ERREUR NBDAYS");
 			e.printStackTrace();
 		}
 		return 1;
@@ -238,18 +241,15 @@ public class BaseReader extends BaseHandler{
 
 				if(!repeaters.containsKey(students.get(numEtu)))
 					repeaters.put(students.get(numEtu), new ArrayList<>());
-				System.out.println();
-				System.out.println(students.get(numEtu));
-				System.out.println(numEtu);
-				System.out.println(students);
-				System.out.println();
+
 				repeaters.get(students.get(numEtu)).add(options.get(opt));
 				//System.out.format("%s, %s, %s, %s, %s, %s, %s\n", firstName, lastName,numetu,mail,token,step,year);
 			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			return repeaters;
+			System.out.println("ERREUR");
+			return null;
 		}
 		return repeaters;
 	}
@@ -274,17 +274,37 @@ public class BaseReader extends BaseHandler{
 		return false;
 	}
 	
+
+	public ArrayList<Student> getScatterBrainStudent(int year){
+		String query = "SELECT * FROM Studdents WHERE numEtudiant in (SELECT DISTINCT numEtu FROM Preferences)";
+		ArrayList<Student> scatterBrainStuddent = new ArrayList<>();
+		ResultSet rs = getResultOfQuery(query);
+		try {
+			while (rs.next()) {
+				int numEtu = rs.getInt("numEtudiant");
+				Student s = students.get(numEtu);
+				if(s!=null)
+					scatterBrainStuddent.add(s);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return scatterBrainStuddent;
+	}
 	
 	public static void main(String[] args) {
 		BaseReader br = new BaseReader();
+		br.initConnection();
+		
 		int nbDays = br.getNbDays(2017);
+		
 		ArrayList<ArrayList<Option>> options = br.getOptionsPerDays(2017);
 		ArrayList<Student> students = br.getStudents(2017);
 		Map<Student, ArrayList<Option>> repeaters = br.getRepeater(2017);
 		Map<Option,ArrayList<Option>> incompatibilities = br.getIncompatibilities();
 		
 		
-		System.out.println(students);
 		ArrayList<Student> scatterBrainStudents = new ArrayList<>();
 		for(Student s : students) {
 			if(s.preferences.get(0).isEmpty())
@@ -292,9 +312,17 @@ public class BaseReader extends BaseHandler{
 		}
 		
 		students.removeAll(scatterBrainStudents);
-		System.out.println(br.getOptions(2017));
-
-
+		
+		Affectop aff = new Affectop(nbDays, students, options, repeaters, scatterBrainStudents, incompatibilities);
+		//System.out.println(aff.affectTop(nbDays,1));
+		
+		
+		
+		//System.out.println(new calcul.Result(students).results);
+		System.out.println(br.isTeacher("_f_s_-é",2017));
+		System.out.println(br.isTeacher("_f_s_-é",2016));
+		System.out.println(br.isTeacher("blah",2017));
+		
 		try {
 			if(br != null && br.st != null)
 				br.st.close();
@@ -302,13 +330,5 @@ public class BaseReader extends BaseHandler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Affectop aff = new Affectop(nbDays, students, options, repeaters, scatterBrainStudents, incompatibilities);
-		System.out.println(aff.affectTop(nbDays,1));
-		
-		System.out.println(new calcul.Result(students).results);
-		System.out.println(br.isTeacher("_f_s_-é",2017));
-		System.out.println(br.isTeacher("_f_s_-é",2016));
-		System.out.println(br.isTeacher("blah",2017));
 	}
 }
