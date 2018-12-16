@@ -78,7 +78,7 @@
 	<footer>
 		<div class="bouton">
 			<p>
-				<a href="prof_valider?token=${ token }" onclick="return confirm('Etes vous sur de vouloir envoyer les mails au eleves ?')">Envoyer les e-mail au elèves</a>
+				<a href="prof_valider?token=${ token }" onclick="return confirm('Etes vous sûr de vouloir envoyer les mails au eleves ?')">Envoyer les mails au elèves</a>
 			</p>
 		</div>
 		

@@ -21,7 +21,7 @@
 		progress(1);
 	</script>
 	<div class= "content">
-	<p>Ajoutez un fichier excel dans le format suivant:</p>
+	<p>Ajoutez un fichier excel dans le format suivant: <c:out value="${ path }"/></p>
 	<div class="tableau">
 	<table>
 	  <tr>
@@ -67,7 +67,7 @@
 	</table>
 	</div>
 
-	<a href="images/template.xls" download>Cliquez ici pour télecharger un exemple</a>
+	<a href="datas/temp.xlsx" download>Cliquez ici pour télecharger un exemple</a>
 
     <c:if test="${ !empty fichier }"><p><c:out value="Le fichier ${ fichier } (${ description }) a été uploadé !" /></p></c:if>
     <form id="upload" method="post" action="prof_ajout?token=${ token }" enctype="multipart/form-data">
@@ -76,7 +76,7 @@
 		
 		<div>
 			<label for="fichier">Fichier à envoyer:</label>
-			<input type="file" id="fichier" name="fichier"/>
+			<input type="file" id="fichier" name="fichier" accept=".xls,.xlsx"/>
 			<div id="filedrag">or drop file here</div>
 		</div>
 		</br>

@@ -6,15 +6,15 @@ import Calcul.Calcul.bean.Student;
 
 public class Result implements Comparable<Result>{
 	public class Affectation {
-		Student s;
-		ArrayList<Option> options;
+		public Student s;
+		public ArrayList<Option> options;
 		public Affectation(Student s, ArrayList<Option> options) {
 			this.s =s;
 			this.options = options;
 		}
 	}
 	
-	ArrayList<Affectation> results;
+	public ArrayList<Affectation> results;
 	public Result(ArrayList<Student> students) {
 		results = new ArrayList<>();
 		for(Student s : students) {
@@ -30,7 +30,7 @@ public class Result implements Comparable<Result>{
 		int satisfaction = 0;
 		for(Affectation a : results) {
 			for(Option opt  : a.s.affected)
-				satisfaction += a.s.preferences.get(opt.group).size() - a.s.preferences.get(opt.group).indexOf(opt);
+				satisfaction += a.s.preferences.get(opt.day).size() - a.s.preferences.get(opt.day).indexOf(opt);
 			satisfaction -= (a.options.size() - a.s.preferences.size()) * 10;
 		}
 		return satisfaction;

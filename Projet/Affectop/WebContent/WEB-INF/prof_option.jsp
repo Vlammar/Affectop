@@ -25,29 +25,21 @@
 		<h2>Ajout des options</h2>
 	</section>
 		<h4>"Nom de la promotion"</h4>
-    <c:if test="${ options.get(0).nom != null }">
     <ul>
 	    <c:forEach var="option"  items="${ options }">
 	       <li>
 	         <p class="option">
-	           	<c:out value="${ option.nom }" /> : </br>  	
+	           	Nom : <c:out value="${ option.getNom() }" /> </br>  	
 	         </p>
-	         <p>
-		        Groupe(s): <c:forEach var="i" begin="1" end="${ group }">
-		        	 <c:out value="${ option.groupes[i-1]}" />
-		        </c:forEach>
+	         <p class="option">
+	           	Jour : <c:out value="${ option.getDay() }" /> </br>  	
 	         </p>
-	       	 <p>
-		        Description : <c:out value="${ option.description }" />
-	         </p>	         
-	         <p>
-		        Mail de l'enseigant : <c:out value="${ option.getMail_prof() }" />
-	         </p>
+	       
+	       
 	        </li>
 	       	 <a href="prof_option">Supprimer</a>
 	    </c:forEach>
-   	</ul> 
-   	</c:if>       
+   	</ul>      
 
 	</br>
 	<c:if test="${ group == null }">

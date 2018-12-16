@@ -36,7 +36,7 @@
     <servlet-name>Prof_ajout</servlet-name>
     <servlet-class>com.m1affectop.servlets.Prof_ajout</servlet-class>
     <multipart-config>
-      <location>C:\Users\Ao\eclipseJEE</location>
+      <location>../../../../temp</location>
       <max-file-size>10485760</max-file-size>
       <max-request-size>52428800</max-request-size>
       <file-size-threshold>1048576</file-size-threshold>

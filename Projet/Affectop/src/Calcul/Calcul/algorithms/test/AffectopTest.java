@@ -19,7 +19,7 @@ public class AffectopTest {
 	
 	
 	private boolean areIncompatibles(Option opt1, Option opt2,HashMap<Option, LinkedList<Option>> incompatibilities) {
-		return opt1.group == opt2.group || incompatibilities.get(opt1).contains(opt2) ||incompatibilities.get(opt2).contains(opt1);
+		return opt1.day == opt2.day || incompatibilities.get(opt1).contains(opt2) ||incompatibilities.get(opt2).contains(opt1);
 	}
 	
 	static boolean respectsIncompatibilities(ArrayList<Student> students,HashMap<Option,LinkedList<Option>> incompatibilities) {
@@ -76,12 +76,12 @@ public class AffectopTest {
 			return false;
 		for(Option o : s1.affected)
 			if(o!=null)
-				if(o!= opt1 && (opt2.group == o.group || opt2.nom == o.nom)) {
+				if(o!= opt1 && (opt2.day == o.day || opt2.nom == o.nom)) {
 					return false;
 				}
 		for(Option o : s2.affected)
 			if(o!=null)
-				if(o!= opt2 && opt1.group == o.group || opt1.nom == o.nom) {
+				if(o!= opt2 && opt1.day == o.day || opt1.nom == o.nom) {
 					return false;
 				}
 		return false;
@@ -96,7 +96,7 @@ public class AffectopTest {
 	}
 	
 	
-	static ArrayList<Student> randomStudents(int nbStudents, ArrayList<ArrayList<Option>> options, int nbDays){
+	public static ArrayList<Student> randomStudents(int nbStudents, ArrayList<ArrayList<Option>> options, int nbDays){
 		ArrayList<Student> result = new ArrayList<>();
 		for(int s = 0 ; s < nbStudents; s ++) {
 			ArrayList<LinkedList<Option>> preferences = new ArrayList<>();
@@ -121,7 +121,7 @@ public class AffectopTest {
 	}
 	
 	// créé une incompatibilité par jour 
-	static HashMap<Option, LinkedList<Option>> makeRandomIncompatibilities(ArrayList<ArrayList<Option>> options) {
+	public static HashMap<Option, LinkedList<Option>> makeRandomIncompatibilities(ArrayList<ArrayList<Option>> options) {
 		HashMap<Option, LinkedList<Option>> incompatibilities = new HashMap<>();
 		Random r = new Random();
 		for(int d = 0; d < options.size() ; d ++) {
@@ -144,7 +144,7 @@ public class AffectopTest {
 		return incompatibilities;	
 	}
 	
-	static ArrayList<ArrayList<Option>> randomOptions(int nbDays, int[]minNbOptions,int[]maxNbOptions, int[]minSizeOptions,int[]maxSizeOptions){
+	public static ArrayList<ArrayList<Option>> randomOptions(int nbDays, int[]minNbOptions,int[]maxNbOptions, int[]minSizeOptions,int[]maxSizeOptions){
 		ArrayList<ArrayList<Option>> answers = new ArrayList<ArrayList<Option>>();
 		
 		Random r = new Random();
@@ -155,7 +155,7 @@ public class AffectopTest {
 			int nbOptionToday = minNbOptions[d]+Math.abs(r.nextInt()%(1+maxNbOptions[d]-minNbOptions[d]));
 			for(int o = 0; o < nbOptionToday ; o++) {
 				int opSize = minSizeOptions[d]+Math.abs(r.nextInt()%(1+maxSizeOptions[d]-minSizeOptions[d]));
-				todayOptions.add(new Option(opSize, "o"+o+"_"+d, d));
+				todayOptions.add(new Option(opSize, "o"+o+"_"+d, d, 0));
 			}
 			answers.add(todayOptions);
 		}

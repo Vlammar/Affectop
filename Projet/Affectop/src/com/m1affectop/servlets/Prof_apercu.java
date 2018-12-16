@@ -2,6 +2,7 @@ package com.m1affectop.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -72,11 +73,11 @@ public class Prof_apercu extends HttpServlet {
 		
 		List<Option> optionPref = new ArrayList<>();
 		
-		Option option1 = new Option(0, "Option test 1", 0);
+		Option option1 = new Option(0, "Option test 1", 0, 0);
 		option1.setDescription("Lorem ipsum");
-		Option option2 = new Option(0, "Option test 2", 0);
+		Option option2 = new Option(0, "Option test 2", 0, 0);
 		option2.setDescription("Lorem ipsum");
-		Option option3 = new Option(0, "Option test 3", 0);
+		Option option3 = new Option(0, "Option test 3", 0, 0);
 		option3.setDescription("Lorem ipsum");
 		
 		optionPref.add(option1);
@@ -89,6 +90,11 @@ public class Prof_apercu extends HttpServlet {
 		students.get(3).setOptionPref(null);
         
         request.setAttribute("eleves", students);
+        
+        
+        //ArrayList<LinkedList<Option>> prefs = basereader.getStudentPreference(3, basereader.numEtudiantRequest(token), 2018); 
+        //request.setAttribute("eleves", basereader.getStudents(2018));
+        //request.setAttribute("prefs", basereader.getOptions(2018));
         
         this.getServletContext().getRequestDispatcher("/WEB-INF/prof_apercu.jsp").forward(request, response);
 	}

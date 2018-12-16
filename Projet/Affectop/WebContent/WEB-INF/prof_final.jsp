@@ -21,7 +21,7 @@
 	</script> 
 	<div class= "content">
 		<p>
-			Les mails on été envoyés.
+			Les mails ont été envoyés.
 		</p>
 	</div>
 </body>

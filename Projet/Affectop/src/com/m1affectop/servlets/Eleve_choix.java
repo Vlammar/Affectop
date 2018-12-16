@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import Calcul.Calcul.base.BaseReader;
+import Calcul.Calcul.base.BaseWriter;
 import Calcul.Calcul.bean.Option;
+import Calcul.Calcul.bean.Student;
 
 /**
  * Servlet implementation class Eleve_choix
@@ -42,26 +44,8 @@ public class Eleve_choix extends HttpServlet {
         
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
-		
-        List<Option> options = new ArrayList<>();
-		
-		Option option = new Option(0, "Option test 1", 0);
-		
-		Option option2 = new Option(0, "Option test 2", 0);
-		
-		Option option3 = new Option(0, "Option test 3", 0);
-		
-		Option option4 = new Option(0, "Option test 4", 0);
-		
-		Option option5 = new Option(0, "Option test 5", 0);
-		
-		options.add(option);
-		options.add(option2);
-		options.add(option3);
-		options.add(option4);
-		options.add(option5);
 
-		request.setAttribute("options", options);
+		request.setAttribute("options", basereader.getOptions(2018));
         
 		this.getServletContext().getRequestDispatcher("/WEB-INF/eleve_choix.jsp").forward(request, response);
 		}
@@ -71,6 +55,9 @@ public class Eleve_choix extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BaseReader basereader = new BaseReader();
+		BaseWriter bw = new BaseWriter();
+		
+		Option op = new Option(0, null, 0, 0);
         
 		String token = request.getParameter("token");
         request.setAttribute("token", token);
@@ -82,28 +69,25 @@ public class Eleve_choix extends HttpServlet {
         request.setAttribute("firstname", firstname);
 		
 		List<String> choix = new ArrayList<>();
-		List<Option> options = new ArrayList<>();
 		
-		Option option = new Option(0, "Option test 1", 0);
-		
-		Option option2 = new Option(0, "Option test 2", 0);
-		
-		Option option3 = new Option(0, "Option test 3", 0);
-		
-		Option option4 = new Option(0, "Option test 4", 0);
-		
-		Option option5 = new Option(0, "Option test 5", 0);
-		
-		options.add(option);
-		options.add(option2);
-		options.add(option3);
-		options.add(option4);
-		options.add(option5);
+		ArrayList<Student> students = basereader.getStudents(2018);
+		ArrayList<Option> options = basereader.getOptions(2018);
 		
 		for(int i = 0; i< options.size(); i++) {
 			choix.add(request.getParameter("" + (i + 1) ));
 		}
 		
+		ArrayList<Option> prefs = new ArrayList<>();
+		
+		for (String c : choix) {
+			prefs.add(op.nameToOption(options, c));
+		}
+		
+		int numEtudiant = basereader.numEtudiantRequest(token);
+        
+		bw.writePreference(numEtudiant, prefs);
+		
+		request.setAttribute("prefs", prefs);
 		request.setAttribute("options", options);
 		request.setAttribute("choix", choix);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/eleve_choix.jsp").forward(request, response);

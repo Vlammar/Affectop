@@ -34,10 +34,10 @@
 	    <c:forEach var="eleve"  items="${ eleves }">
 	       <tr>
 	         <td class="eleve" id="gris">
-	           	<c:out value="${ eleve.nom }" />	
+	           	<c:out value="${ eleve.getNom() }" />	
 	         </td>
 	       	 <td id="gris">
-		        <c:out value="${ eleve.prenom }" />
+		        <c:out value="${ eleve.getPrenom() }" />
 	         </td>
 	         <c:forEach var="option"  items="${ options }">
    				<td>
@@ -52,9 +52,6 @@
     	<button type="submit">confirmer les redoublants</button>
  	</div>
  	</form>
- 	
- 	<p><c:out value="${ valide1_1}"/> <c:out value="${ valide1_2 }"/> <c:out value="${ valide1_3 }"/></p>
- 	<p><c:out value="${ valide2_1}"/> <c:out value="${ valide2_2 }"/> <c:out value="${ valide2_3 }"/></p>
  	
  	<footer>
 		<div class="bouton">

@@ -8,23 +8,7 @@ import java.util.List;
 public class Student {
 	private String nom;
 	private String prenom;
-
-	public String getNom() {
-		return nom;
-	}
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-	public String getPrenom() {
-		return prenom;
-	}
-	public void setPrenom(String prenom) {
-		this.prenom = prenom;
-	}
-	public void setNomPrenom(String nom, String prenom) {
-		this.prenom = prenom;
-		this.nom = nom;
-	}
+	public int numEtu;
 
 	private Promotion promotion;
 	/** 
@@ -35,12 +19,6 @@ public class Student {
 	 * les options où l'étudiant a été accepté
 	 */
 	public Option [] affected;
-	public String getMail() {
-		return mail;
-	}
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
 
 	/**
 	 * la liste des preferences de l'étudiant par ordre décroissant d'interet pour chaques jours 
@@ -61,10 +39,17 @@ public class Student {
 	 * @param preferences les prefereces de l'etudiants par jours
 	 * @return un etudiant
 	 */
+	public Student(String mail,ArrayList<LinkedList<Option>> preferences,int nbDays, int numEtu) {
+		this.mail = mail;
+		this.preferences = preferences;
+		this.affected = new Option[nbDays];
+		this.numEtu = numEtu;
+	}
 	public Student(String mail,ArrayList<LinkedList<Option>> preferences,int nbDays) {
 		this.mail = mail;
 		this.preferences = preferences;
 		this.affected = new Option[nbDays];
+		this.numEtu = 0;
 	}
 	/*
 	public Eleve(String nom, String prenom, String adresseMail, Promotion promotion, List<Option> optionValidé,
@@ -77,13 +62,35 @@ public class Student {
 		this.numEtudiant = numEtudiant;
 	}*/
 	public String toString() {
-		return mail+" "+preferences+" ";
+		return nom + " " +prenom + " "  + mail +" ";
 	}
 	/**
 	 * Donne la satisfaction de l'étudiant définie par
 	 * s = somme pour tous les jours de l'indice de l'option affectée ce jour là 
 	 * @return la satisfaction
 	 */
+	public String getMail() {
+		return mail;
+	}
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+	public String getNom() {
+		return nom;
+	}
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	public String getPrenom() {
+		return prenom;
+	}
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
+	public void setNomPrenom(String nom, String prenom) {
+		this.prenom = prenom;
+		this.nom = nom;
+	}
 	public int getSatisfaction() {
 		int satis = 0;
 		for(int d = 0 ; d < affected.length; d ++) {
@@ -102,7 +109,7 @@ public class Student {
 	 * @return true if the student is affected to this option
 	 */
 	public boolean isAffectedTo(Option opt) {
-		return affected[opt.group] == opt;
+		return affected[opt.day] == opt;
 	}
 	
 	/**

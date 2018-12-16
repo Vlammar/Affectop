@@ -46,7 +46,7 @@
 	<footer>
 		<div class="bouton">
 			<p>
-				<a href="prof_final?token=${ token }" onclick="return confirm('Etes vous sur de vouloir envoyer les mails ?')">Envoyer les mails</a>
+				<a href="prof_final?token=${ token }" onclick="return confirm('Etes vous sûr de vouloir envoyer les mails ?')">Envoyer les mails</a>
 			</p>
 		</div>
 	</footer>

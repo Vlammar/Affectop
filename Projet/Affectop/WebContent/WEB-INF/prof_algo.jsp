@@ -22,9 +22,9 @@
 	<div class= "content">
 	
 	<p>
-		L a liste d'options à bien été enregistrée et les mails envoyés au élèves.
+		L'algorithme d'affectation a bien été lancé.
 	</p>
-	<p>Dans la prochaine page, vous pourrez avoir un aperçu de la liste des élèves qui se sont inscrits ainsi que de leurs préférences d'options.</p>
+	<p>Dans la prochaine page, vous pourrez envoyer des mails généralisés aux élèves avec leur affectation d'options, et un mail au secrétariat afin qu'ils aient connaissance de ces affectations.</p>
 	</div>
 	
 	<footer>

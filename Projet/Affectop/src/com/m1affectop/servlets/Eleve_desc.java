@@ -45,23 +45,7 @@ public class Eleve_desc extends HttpServlet {
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
 		
-		List<Option> options = new ArrayList<>();
-		
-		Option option = new Option(0, "Option test 1", 0);
-		option.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing\r\n" + 
-				"elit. Sed non risus. Suspendisse lectus tortor,\r\n" + 
-				"dignissim sit amet, adipiscing nec, ultricies sed,\r\n" + 
-				"dolor.");
-		
-		Option option2 = new Option(0, "Option test 2", 0);
-		option2.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing\r\n" + 
-				"elit. Sed non risus. Suspendisse lectus tortor,\r\n" + 
-				"dignissim sit amet, adipiscing nec, ultricies sed,\r\n" + 
-				"dolor.");
-		
-		options.add(option);
-		options.add(option2);
-		request.setAttribute("options", options);
+		request.setAttribute("options", basereader.getOptions(2018));
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/eleve_desc.jsp").forward(request, response);
 	}

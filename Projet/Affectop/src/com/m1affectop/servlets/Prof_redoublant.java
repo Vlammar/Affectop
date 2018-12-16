@@ -3,6 +3,7 @@ package com.m1affectop.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import Calcul.Calcul.base.BaseReader;
+import Calcul.Calcul.base.BaseWriter;
 import Calcul.Calcul.bean.Student;
 import Calcul.Calcul.bean.Option;
 /**
@@ -33,6 +35,8 @@ public class Prof_redoublant extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BaseReader basereader = new BaseReader();
+		BaseWriter bw = new BaseWriter();
+		bw.initConnection();
         
 		String token = request.getParameter("token");
         request.setAttribute("token", token);
@@ -42,34 +46,9 @@ public class Prof_redoublant extends HttpServlet {
         
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
-		
-		List<Option> options = new ArrayList<>();
-		List<Student> eleves = new ArrayList<>();
-		
-		Student eleve1 = new Student(null, null, 0);
-		Student eleve2 = new Student(null, null, 0);
-		
-		eleve1.setNomPrenom("Jean1", "Martin1");
-		eleve1.setMail("jean.martin1@etu.univ-amu.fr");
-		eleve2.setNomPrenom("Jean2", "Martin2");
-		eleve2.setMail("jean.martin2@etu.univ-amu.fr");
-		
-		eleves.add(eleve1);
-		eleves.add(eleve2);
-				
-		Option option1 = new Option(0, "Option test 1", 0);
-		option1.setDescription("Lorem ipsum");
-		Option option2 = new Option(0, "Option test 2", 0);
-		option2.setDescription("Lorem ipsum");
-		Option option3 = new Option(0, "Option test 3", 0);
-		option3.setDescription("Lorem ipsum");
-		
-		options.add(option1);
-		options.add(option2);
-		options.add(option3);
         
-        request.setAttribute("options", options);
-        request.setAttribute("eleves", eleves);
+        request.setAttribute("options", basereader.getOptions(2018));
+        request.setAttribute("eleves", basereader.getStudents(2018));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/prof_redoublant.jsp").forward(request, response);
 	}
 
@@ -78,6 +57,8 @@ public class Prof_redoublant extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BaseReader basereader = new BaseReader();
+		BaseWriter bw = new BaseWriter();
+		bw.initConnection();
         
 		String token = request.getParameter("token");
         request.setAttribute("token", token);
@@ -87,49 +68,23 @@ public class Prof_redoublant extends HttpServlet {
         
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
-		
-		List<Option> options = new ArrayList<>();
-		List<Student> eleves = new ArrayList<>();
-		
-		Student eleve1 = new Student(null, null, 0);
-		Student eleve2 = new Student(null, null, 0);
-		
-		eleve1.setNomPrenom("Jean1", "Martin1");
-		eleve1.setMail("jean.martin1@etu.univ-amu.fr");
-		eleve2.setNomPrenom("Jean2", "Martin2");
-		eleve2.setMail("jean.martin2@etu.univ-amu.fr");
-		
-		eleves.add(eleve1);
-		eleves.add(eleve2);
-				
-		Option option1 = new Option(0, "Option test 1", 0);
-		option1.setDescription("Lorem ipsum");
-		Option option2 = new Option(0, "Option test 2", 0);
-		option2.setDescription("Lorem ipsum");
-		Option option3 = new Option(0, "Option test 3", 0);
-		option3.setDescription("Lorem ipsum");
-		
-		options.add(option1);
-		options.add(option2);
-		options.add(option3);
-		
-		String valide1_1 = request.getParameter("valide1_1");
-		String valide1_2 = request.getParameter("valide1_2");
-		String valide1_3 = request.getParameter("valide1_3");
-		String valide2_1 = request.getParameter("valide2_1");
-		String valide2_2 = request.getParameter("valide2_2");
-		String valide2_3 = request.getParameter("valide2_3");
-		
+
+        ArrayList<Option> options = basereader.getOptions(2018);
+        ArrayList<Student> students = basereader.getStudents(2018);
         
-		request.setAttribute("valide1_1", valide1_1);
-		request.setAttribute("valide1_2", valide1_2);
-		request.setAttribute("valide1_3", valide1_3);
-		request.setAttribute("valide2_1", valide2_1);
-		request.setAttribute("valide2_2", valide2_2);
-		request.setAttribute("valide2_3", valide2_3);
+		request.setAttribute("options", basereader.getOptions(2018));
+        request.setAttribute("eleves", basereader.getStudents(2018));
 		
+        for(int i = 1; i <= options.size(); i++) {
+        	for (int j = 1; j <= students.size(); j++) {
+        		if(request.getParameter("valide"+i+"_"+j) != null)
+        			bw.writeOneRepeater(basereader.numEtudiantRequest(token), options.get(i-1).id, 2018);
+        	}
+        }
+        
         request.setAttribute("options", options);
-        request.setAttribute("eleves", eleves);
+        request.setAttribute("eleves", students);
+        request.setAttribute("redoublants", basereader.getRepeater(2018));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/prof_redoublant.jsp").forward(request, response);
 	}
 

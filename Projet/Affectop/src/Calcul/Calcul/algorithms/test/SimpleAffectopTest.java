@@ -48,11 +48,11 @@ public class SimpleAffectopTest {
 		ArrayList<Student> students = new ArrayList<>();
 		ArrayList<Option> options = new ArrayList<>();
 		
-		Option opt1 = new Option(1, "1",1);
+		Option opt1 = new Option(1, "1",1, 0);
 		options.add(opt1);
-		Option opt2 = new Option(1, "2",1);
+		Option opt2 = new Option(1, "2",1, 0);
 		options.add(opt2);
-		Option opt3 = new Option(1, "3",1);
+		Option opt3 = new Option(1, "3",1, 0);
 		options.add(opt3);
 
 		LinkedList<Option> l1 = new LinkedList<>(Arrays.asList(new Option[]{opt1,opt2,opt3}));

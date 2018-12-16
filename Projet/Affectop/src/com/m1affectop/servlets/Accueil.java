@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import Calcul.Calcul.base.BaseReader;
+import Calcul.Calcul.base.BaseWriter;
 
 /**
  * Servlet implementation class Accueil
@@ -29,6 +30,9 @@ public class Accueil extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BaseReader basereader = new BaseReader();
+		BaseWriter bw = new BaseWriter();
+		bw.initConnection();
+		
         
 		String token = request.getParameter("token");
         request.setAttribute("token", token);

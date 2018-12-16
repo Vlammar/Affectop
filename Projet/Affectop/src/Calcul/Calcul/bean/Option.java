@@ -1,5 +1,6 @@
 package Calcul.Calcul.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +19,21 @@ public class Option {
 	//le nom de l'option
 	public String nom;
 	//le groupe d'options auquel il appartient (le jour)
-	public int group;
+	public int day;
+	
+	public int id;
+	
+	public int year;
 
-	private String description;
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public String description;
 	private List<String> groupes;
 	
 	private String mail_prof;
@@ -33,11 +46,20 @@ public class Option {
 		this.mail_prof = mail_prof;
 	}
 
-	public Option(int size, String nom,int day){
+	public Option(int size, String intitule,int day, int id){
 		accepted = new LinkedList<Student>();
 		this.size = size;
-		this.nom = nom;
-		this.group = day;
+		this.nom = intitule;
+		this.day = day;
+		this.id = id;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
 	}
 
 	public String getNom() {
@@ -72,6 +94,17 @@ public class Option {
 	}
 	
 	public String toString() {
-		return "("+nom+","+group+","+size+")";
+		return "Nom de l'option : " + nom;
+	}
+
+	public void setGroupe(int day) {
+		this.day = day;
+	}
+	public Option nameToOption(ArrayList<Option> options, String name) {
+		for (Option option : options) {
+			if(option.nom.equals(name))
+				return option;
+		}
+		return null;
 	}
 }

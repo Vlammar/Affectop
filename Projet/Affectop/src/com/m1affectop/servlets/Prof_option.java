@@ -3,6 +3,7 @@ package com.m1affectop.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import Calcul.Calcul.base.BaseReader;
+import Calcul.Calcul.base.BaseWriter;
 import Calcul.Calcul.bean.Option;
 
 /**
@@ -44,6 +46,7 @@ public class Prof_option extends HttpServlet {
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
 		
+        //request.setAttribute("options", basereader.getOptions(2018));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/prof_option.jsp").forward(request, response);
 	}
 
@@ -52,6 +55,8 @@ public class Prof_option extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BaseReader basereader = new BaseReader();
+		BaseWriter basewriter = new BaseWriter();
+		basewriter.initConnection();
         
 		String token = request.getParameter("token");
         request.setAttribute("token", token);
@@ -76,21 +81,26 @@ public class Prof_option extends HttpServlet {
         
         request.setAttribute("group", group);
         
-		List<Option> options = new ArrayList<>();
 		List<String> groupes = new ArrayList<>();
 		
 		for(int i = 1; i <= Integer.parseInt(group); i++)
 			groupes.add(request.getParameter("groupe_" + i));
 		
-		//options.get(0).setMail_prof(request.getParameter("mail_prof"));
-		
-		Option option1 = new Option(0, "Option test 1", 0);
-		option1.setDescription("Lorem ipsum");
-		option1.setGroupes(groupes);
-		option1.setMail_prof(request.getParameter("mail_prof"));
-		options.add(option1);
-        
-        request.setAttribute("options", options);
+		String test = request.getParameter("nom");
+		if(test != null) {
+			Option option = new Option(0, request.getParameter("nom"), 0, (int)Math.random() * ( 1000 - 0 ));
+			for (String g : groupes) {
+				if(g != null)
+					option.setGroupe(Integer.parseInt(g.substring(7)));
+			}
+			
+			option.setDescription(request.getParameter("description"));
+			option.setMail_prof(request.getParameter("mail_prof"));
+			option.setYear(2018);
+			
+			basewriter.writeOneOption(option, 2018);
+		}
+		request.setAttribute("options", basereader.getOptions(2018));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/prof_option.jsp").forward(request, response);
 	}
 

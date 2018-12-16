@@ -46,33 +46,8 @@ public class Prof_confirmer extends HttpServlet {
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
 		
-		List<Option> options = new ArrayList<>();
-		List<Student> eleves = new ArrayList<>();
-		
-		Student eleve1 = new Student(null, null, 0);
-		Student eleve2 = new Student(null, null, 0);
-		
-		eleve1.setNomPrenom("Jean1", "Martin1");
-		eleve1.setMail("jean.martin1@etu.univ-amu.fr");
-		eleve2.setNomPrenom("Jean2", "Martin2");
-		eleve2.setMail("jean.martin2@etu.univ-amu.fr");
-		
-		eleves.add(eleve1);
-		eleves.add(eleve2);
-				
-		Option option1 = new Option(0, "Option test 1", 0);
-		option1.setDescription("Lorem ipsum");
-		Option option2 = new Option(0, "Option test 2", 0);
-		option2.setDescription("Lorem ipsum");
-		Option option3 = new Option(0, "Option test 3", 0);
-		option3.setDescription("Lorem ipsum");
-		
-		options.add(option1);
-		options.add(option2);
-		options.add(option3);
-        
-        request.setAttribute("options", options);
-        request.setAttribute("eleves", eleves);
+        request.setAttribute("options", basereader.getOptions(2018));
+        request.setAttribute("eleves", basereader.getStudents(2018));
 		this.getServletContext().getRequestDispatcher("/WEB-INF/prof_confirmer.jsp").forward(request, response);
 	}
 
@@ -91,33 +66,8 @@ public class Prof_confirmer extends HttpServlet {
         String firstname = basereader.firstNameRequest(token);
         request.setAttribute("firstname", firstname);
 		
-		List<Option> options = new ArrayList<>();
-		List<Student> eleves = new ArrayList<>();
-		
-		Student eleve1 = new Student(null, null, 0);
-		Student eleve2 = new Student(null, null, 0);
-		
-		eleve1.setNomPrenom("Jean1", "Martin1");
-		eleve1.setMail("jean.martin1@etu.univ-amu.fr");
-		eleve2.setNomPrenom("Jean2", "Martin2");
-		eleve2.setMail("jean.martin2@etu.univ-amu.fr");
-		
-		eleves.add(eleve1);
-		eleves.add(eleve2);
-				
-		Option option1 = new Option(0, "Option test 1", 0);
-		option1.setDescription("Lorem ipsum");
-		Option option2 = new Option(0, "Option test 2", 0);
-		option2.setDescription("Lorem ipsum");
-		Option option3 = new Option(0, "Option test 3", 0);
-		option3.setDescription("Lorem ipsum");
-		
-		options.add(option1);
-		options.add(option2);
-		options.add(option3);
-        
-        request.setAttribute("options", options);
-        request.setAttribute("eleves", eleves);
+        request.setAttribute("options", basereader.getOptions(2018));
+        request.setAttribute("eleves", basereader.getStudents(2018));
 		
 		String mail = request.getParameter("mail");
 		
